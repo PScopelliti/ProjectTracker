@@ -8,22 +8,22 @@ import io.finch.{BadRequest, Endpoint, Ok, _}
 
 trait NoteApi {
 
-  private val basePath = "api" :: "v1"
+  private val basePath = "api" :: "v1" :: "notes"
 
-  val getNotes: Endpoint[List[Note]] = get(basePath :: "notes") {
+  val getNotes: Endpoint[List[Note]] = get(basePath) {
     Ok(List(Note("1", "Note 1"), Note("2", "Note 2")))
   }
-  val getNoteById: Endpoint[Note] = get(basePath :: "note" :: string) { s: String =>
+  val getNoteById: Endpoint[Note] = get(basePath :: string) { s: String =>
     if (s != "") Ok(Note("1", "Note 1"))
     else BadRequest(new IllegalArgumentException("empty string"))
   }
-  val createNote: Endpoint[Note] = post(basePath :: "note" :: jsonBody[Note]) {
+  val createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) {
     l: Note => Created(Note(l.id, l.text))
   }
-  val deleteNote: Endpoint[Unit] = delete(basePath :: "note" :: string) { s: String =>
+  val deleteNote: Endpoint[Unit] = delete(basePath :: string) { s: String =>
     NoContent[Unit].withStatus(Status.Ok)
   }
-  val patchNote: Endpoint[Note] = patch(basePath :: "note" :: jsonBody[Note]) {
+  val patchNote: Endpoint[Note] = patch(basePath :: jsonBody[Note]) {
     l: Note => Ok(Note(l.id, l.text))
   }
 
