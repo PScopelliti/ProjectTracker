@@ -10,20 +10,24 @@ trait NoteApi {
 
   private val basePath = "api" :: "v1" :: "notes"
 
-  val getNotes: Endpoint[List[Note]] = get(basePath) {
+  def getNotes: Endpoint[List[Note]] = get(basePath) {
     Ok(List(Note("1", "Note 1"), Note("2", "Note 2")))
   }
-  val getNoteById: Endpoint[Note] = get(basePath :: string) { s: String =>
+
+  def getNoteById: Endpoint[Note] = get(basePath :: string) { s: String =>
     if (s != "") Ok(Note("1", "Note 1"))
     else BadRequest(new IllegalArgumentException("empty string"))
   }
-  val createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) {
+
+  def createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) {
     l: Note => Created(Note(l.id, l.text))
   }
-  val deleteNote: Endpoint[Unit] = delete(basePath :: string) { s: String =>
+
+  def deleteNote: Endpoint[Unit] = delete(basePath :: string) { s: String =>
     NoContent[Unit].withStatus(Status.Ok)
   }
-  val patchNote: Endpoint[Note] = patch(basePath :: jsonBody[Note]) {
+
+  def patchNote: Endpoint[Note] = patch(basePath :: jsonBody[Note]) {
     l: Note => Ok(Note(l.id, l.text))
   }
 
