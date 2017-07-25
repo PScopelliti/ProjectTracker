@@ -1,38 +1,42 @@
 package app.v1.api
 
+import java.util.UUID
+
+import app.service.UuidProviderService
 import app.v1.model.Note
 import com.twitter.finagle.http.Status
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{BadRequest, Endpoint, Ok, _}
+import io.finch.{Endpoint, Ok, _}
 
 trait NoteApi {
+
+  self: UuidProviderService =>
 
   private val basePath = "api" :: "v1" :: "notes"
 
   def getNotes: Endpoint[List[Note]] = get(basePath) {
-    Ok(List(Note("1", "Note 1"), Note("2", "Note 2")))
+    Ok(List(Note(uuidProvider, "Note 1"), Note(uuidProvider, "Note 2")))
   }
 
-  def getNoteById: Endpoint[Note] = get(basePath :: string) { s: String =>
-    if (s != "") Ok(Note("1", "Note 1"))
-    else BadRequest(new IllegalArgumentException("empty string"))
+  def getNoteById: Endpoint[Note] = get(basePath :: uuid) { id: UUID =>
+    Ok(Note(id, "Note 1"))
   }
 
-  def createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) {
-    l: Note => Created(Note(l.id, l.text))
+  def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
+    (f: UUID => Note) => Created(f(uuidProvider))
   }
 
-  def deleteNote: Endpoint[Unit] = delete(basePath :: string) { s: String =>
+  def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { id: UUID =>
     NoContent[Unit].withStatus(Status.Ok)
   }
 
-  def patchNote: Endpoint[Note] = patch(basePath :: jsonBody[Note]) {
-    l: Note => Ok(Note(l.id, l.text))
+  def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note]) { (id: UUID, pt: Note) =>
+    Ok(pt)
   }
 
   def noteApis = (getNotes :+: getNoteById :+: createNote :+: deleteNote :+: patchNote)
 }
 
 
-object NoteApi extends NoteApi
+object NoteApi extends NoteApi with UuidProviderService

@@ -1,9 +1,11 @@
 package app.support
 
+import java.util.UUID
+
 import app.v1.model.Note
 
 object NoteStub {
 
-  def generateNote(id: String, text: String) = Note(id, text)
+  def generateNote(id: UUID, text: String) = Note(id, text)
 
 }
