@@ -39,4 +39,7 @@ trait NoteApi {
 }
 
 
-object NoteApi extends NoteApi with UuidProviderService
+object NoteApi extends NoteApi with UuidProviderService {
+
+  def uuidProvider: UUID = UUID.randomUUID()
+}

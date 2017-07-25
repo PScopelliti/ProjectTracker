@@ -4,6 +4,6 @@ import java.util.UUID
 
 trait UuidProviderService {
 
-  def uuidProvider = UUID.randomUUID
+  def uuidProvider : UUID
 
 }
