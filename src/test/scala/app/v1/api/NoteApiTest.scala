@@ -2,8 +2,6 @@ package app.v1.api
 
 import java.nio.charset.StandardCharsets
 import java.util.UUID
-
-import app.service.UuidProviderService
 import app.support.NoteStub.generateNote
 import com.twitter.finagle.http.Status
 import io.circe.generic.auto._

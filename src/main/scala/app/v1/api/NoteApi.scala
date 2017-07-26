@@ -1,8 +1,6 @@
 package app.v1.api
 
 import java.util.UUID
-
-import app.service.UuidProviderService
 import app.v1.model.Note
 import com.twitter.finagle.http.Status
 import io.circe.generic.auto._
