@@ -25,7 +25,7 @@ trait ErrorHandler extends StrictLogging {
       Future.value(Response(Version.Http11, Status.InternalServerError))
     } catch {
       case e: Throwable => {
-        Console.err.println(s"Unable to log unhandled exception: $e")
+        println(s"Unable to log unhandled exception: $e")
         throw e
       }
     }

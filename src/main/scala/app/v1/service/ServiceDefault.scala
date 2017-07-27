@@ -8,7 +8,7 @@ trait ServiceDefault extends ServiceComponent {
 
   this: UUIDComponent =>
 
-  def noteService = new DefaultNoteService
+  def noteService: DefaultNoteService = new DefaultNoteService
 
   class DefaultNoteService extends NoteService {
 

@@ -2,8 +2,6 @@ package app.v1.api
 
 import java.util.UUID
 
-import app.attempt.ServiceDefault
-import app.service.{ServiceDefault, UUIDRandom}
 import app.v1.model.Note
 import app.v1.service.{ServiceComponent, ServiceDefault, UUIDRandom}
 import com.twitter.finagle.http.Status
