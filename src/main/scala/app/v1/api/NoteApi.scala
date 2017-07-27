@@ -2,8 +2,11 @@ package app.v1.api
 
 import java.util.UUID
 
-import app.attempt.{ServiceComponent, ServiceDefault, UUIDRandom}
+import app.attempt.ServiceDefault
+import app.service.{ServiceDefault, UUIDRandom}
 import app.v1.model.Note
+import app.v1.service.{ServiceComponent, ServiceDefault, UUIDRandom}
+import com.twitter.finagle.http.Status
 import io.circe.generic.auto._
 import io.finch.circe._
 import io.finch.{Endpoint, _}
@@ -14,13 +17,15 @@ trait NoteApi {
 
   private val basePath = "api" :: "v1" :: "notes"
 
-  //  def getNotes: Endpoint[List[Note]] = get(basePath) {
-  //    Ok(List(Note(uuidProvider, "Note 1"), Note(uuidProvider, "Note 2")))
-  //  }
+  def noteApis = (getNotes :+: getNoteById :+: createNote :+: deleteNote :+: patchNote)
 
-  //  def getNoteById: Endpoint[Note] = get(basePath :: uuid) { id: UUID =>
-  //    Ok(Note(id, "Note 1"))
-  //  }
+  def getNotes: Endpoint[List[Note]] = get(basePath) {
+    Ok(noteService.getNotes)
+  }
+
+  def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
+    Ok(noteService.getNoteById(uuid))
+  }
 
   def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
     (noteGen: UUID => Note) => {
@@ -28,16 +33,15 @@ trait NoteApi {
     }
   }
 
-  //  def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { id: UUID =>
-  //    NoContent[Unit].withStatus(Status.Ok)
-  //  }
+  def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
+    noteService.deleteNote(uuid)
+    NoContent[Unit].withStatus(Status.Ok)
+  }
 
-  //  def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note]) { (id: UUID, pt: Note) =>
-  //    Ok(pt)
-  //  }
-
-  //def noteApis = (getNotes :+: getNoteById :+: createNote :+: deleteNote :+: patchNote)
-  def noteApis = (createNote)
+  def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note]) { (uuid: UUID, note: Note) =>
+    noteService.patchNote(uuid, note)
+    Ok(note)
+  }
 }
 
 
