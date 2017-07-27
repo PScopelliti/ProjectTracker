@@ -1,5 +1,7 @@
 package app.attempt
 
+import java.util.UUID
+
 import app.v1.model.Note
 
 trait ServiceComponent {
@@ -7,7 +9,7 @@ trait ServiceComponent {
   def noteService: NoteService
 
   trait NoteService {
-    def createNote: Note
+    def createNote(noteGen: UUID => Note): Note
   }
 
 }

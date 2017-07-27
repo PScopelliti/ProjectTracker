@@ -23,8 +23,9 @@ trait NoteApi {
   //  }
 
   def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
-    (f: UUID => Note) =>
-      Created(noteService.createNote)
+    (noteGen: UUID => Note) => {
+      Created(noteService.createNote(noteGen))
+    }
   }
 
   //  def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { id: UUID =>

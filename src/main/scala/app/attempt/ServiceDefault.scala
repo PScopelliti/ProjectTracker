@@ -1,5 +1,7 @@
 package app.attempt
 
+import java.util.UUID
+
 import app.v1.model.Note
 
 trait ServiceDefault extends ServiceComponent {
@@ -9,7 +11,7 @@ trait ServiceDefault extends ServiceComponent {
   def noteService = new DefaultNoteService
 
   class DefaultNoteService extends NoteService {
-    def createNote: Note = Note(noteUUID.getUUID, "test 1")
+    def createNote(noteGen: UUID => Note): Note = noteGen(noteUUID.getUUID)
   }
 
 }
