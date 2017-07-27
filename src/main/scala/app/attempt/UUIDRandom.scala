@@ -2,7 +2,7 @@ package app.attempt
 
 import java.util.UUID
 
-trait RandomUUIDComponent extends UUIDComponent {
+trait UUIDRandom extends UUIDComponent {
 
   def noteUUID = new RandomNoteUUID
 

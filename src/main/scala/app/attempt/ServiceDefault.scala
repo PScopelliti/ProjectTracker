@@ -2,7 +2,7 @@ package app.attempt
 
 import app.v1.model.Note
 
-trait DefaultServiceComponent extends ServiceComponent {
+trait ServiceDefault extends ServiceComponent {
 
   this: UUIDComponent =>
 
