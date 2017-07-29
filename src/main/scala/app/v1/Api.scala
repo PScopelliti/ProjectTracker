@@ -4,7 +4,7 @@ import app.v1.api.NoteApi
 import app.v1.handler.ErrorHandler
 import com.twitter.finagle.Service
 import com.twitter.finagle.http.filter.ExceptionFilter
-import com.twitter.finagle.http.{Request, Response}
+import com.twitter.finagle.http.{ Request, Response }
 import io.circe.generic.auto._
 import io.finch.circe._
 

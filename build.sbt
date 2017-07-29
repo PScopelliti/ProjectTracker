@@ -1,3 +1,8 @@
+import com.typesafe.sbt.SbtScalariform
+import com.typesafe.sbt.SbtScalariform.ScalariformKeys
+
+import scalariform.formatter.preferences._
+
 name := "FinchTest"
 
 version := "1.0"
@@ -33,3 +38,13 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % scalatestVersion % "test"
 
 )
+
+val preferences =
+  ScalariformKeys.preferences := ScalariformKeys.preferences.value
+    .setPreference(AlignArguments, true)
+    .setPreference(AlignParameters, true)
+    .setPreference(AlignSingleLineCaseStatements, true)
+    .setPreference(DoubleIndentConstructorArguments, true)
+    .setPreference(DanglingCloseParenthesis, Preserve)
+
+SbtScalariform.scalariformSettings ++ Seq(preferences)

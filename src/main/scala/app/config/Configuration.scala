@@ -7,8 +7,8 @@ import scala.util.Try
 trait Configuration {
 
   /**
-    * Application config object.
-    */
+   * Application config object.
+   */
   val config = ConfigFactory.load()
 
   /** Host name/address to start service on. */
