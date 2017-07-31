@@ -9,7 +9,7 @@ version := "1.0"
 
 scalaVersion := "2.11.9"
 
-val finchVersion = "0.14.0"
+val finchVersion = "0.15.1"
 val circeVersion = "0.8.0"
 val twitterServerVersion = "1.30.0"
 val typesafeConfigVersion = "1.3.0"
