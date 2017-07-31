@@ -6,7 +6,7 @@ import app.v1.model.Note
 
 trait ServiceComponent {
 
-  def noteService: NoteService
+  val noteService: NoteService
 
   trait NoteService {
 

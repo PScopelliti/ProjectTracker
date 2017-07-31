@@ -6,9 +6,9 @@ import app.v1.model.Note
 
 trait ServiceDefault extends ServiceComponent {
 
-  this: UUIDComponent =>
+  self: UUIDComponent =>
 
-  def noteService: DefaultNoteService = new DefaultNoteService
+  val noteService: DefaultNoteService = new DefaultNoteService
 
   class DefaultNoteService extends NoteService {
 

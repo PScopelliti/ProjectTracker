@@ -4,7 +4,7 @@ import java.util.UUID
 
 trait UUIDComponent {
 
-  def noteUUID: NoteUUID
+  val noteUUID: NoteUUID
 
   trait NoteUUID {
     def getUUID: UUID

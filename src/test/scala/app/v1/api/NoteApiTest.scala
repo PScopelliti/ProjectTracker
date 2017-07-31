@@ -4,16 +4,21 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 import app.support.NoteStub.generateNote
-import app.v1.service.ServiceComponent
+import app.v1.service.{ServiceComponent, UUIDComponent}
 import com.twitter.finagle.http.Status
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{ Application, EndpointResult, Input }
+import io.finch.{Application, EndpointResult, Input}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
-class NoteApiTest extends FlatSpec with Matchers with MockitoSugar {
+trait NoteApiMock extends UUIDComponent with ServiceComponent with MockitoSugar {
+  val noteService: NoteService = mock[NoteService]
+  val noteUUID: NoteUUID = mock[NoteUUID]
+}
+
+class NoteApiTest extends FlatSpec with Matchers {
 
   val basePath = "/api/v1/notes"
   val someUUID = UUID.randomUUID()
@@ -39,14 +44,15 @@ class NoteApiTest extends FlatSpec with Matchers with MockitoSugar {
     result.awaitOutputUnsafe().map(_.value).get should be(generateNote(someUUID, "Note 1"))
   }
 
-  "GetNotes endpoint " should " return a list of notes " in {
+  "GetNotes endpoint " should " return a list of notes " in new NoteApiMock {
 
-    val serviceComponent = mock[ServiceComponent]
+    val someUUUID = UUID.randomUUID()
+
     val input = Input.get(basePath)
 
-    when(serviceComponent.noteService.getNotes).thenReturn(List())
+    when(noteService.getNotes).thenReturn(List(generateNote(someUUID, "Note 1"), generateNote(someUUID, "Note 2")))
 
-    val result = getNotes(input)
+    val result = app.v1.api.NoteApi.getNotes(input)
 
     result.awaitOutputUnsafe().map(_.status).get should be(Status.Ok)
     result.awaitOutputUnsafe().map(_.value).get should be(List(generateNote(someUUID, "Note 1"), generateNote(someUUID, "Note 2")))
