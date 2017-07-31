@@ -3,11 +3,11 @@ package app.v1.service
 import java.util.UUID
 
 import app.v1.model.Note
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{ times, verify, when }
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
-trait UUIDTest extends UUIDComponent with ServiceDefault with MockitoSugar {
+trait UUIDTest extends ServiceDefault with UUIDComponent with MockitoSugar {
   val noteUUID: NoteUUID = mock[NoteUUID]
 }
 
