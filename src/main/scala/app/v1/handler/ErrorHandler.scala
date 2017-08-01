@@ -1,5 +1,6 @@
 package app.v1.handler
 
+import app.utils.AppLogger
 import com.twitter.finagle.http.{ Request, Response, Status, Version }
 import com.twitter.util.Future
 import com.typesafe.scalalogging.StrictLogging
@@ -7,6 +8,9 @@ import io.finch.Error.{ NotParsed, NotPresent, NotValid }
 import io.finch._
 
 trait ErrorHandler extends StrictLogging {
+
+  self: AppLogger =>
+
   def apiErrorHandler: PartialFunction[Throwable, Output[Nothing]] = {
     case e: NotPresent => BadRequest(e)
     case e: NotParsed  => BadRequest(e)
@@ -30,5 +34,3 @@ trait ErrorHandler extends StrictLogging {
     }
   }
 }
-
-object ErrorHandler extends ErrorHandler

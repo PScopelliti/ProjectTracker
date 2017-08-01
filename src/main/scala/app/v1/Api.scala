@@ -9,9 +9,11 @@ import io.circe.generic.auto._
 import io.finch.circe._
 
 trait Api {
+
+  self: ErrorHandler =>
+
   private def api = NoteApiWiring.noteApi.endpoints
 
-  def apiService: Service[Request, Response] = ExceptionFilter andThen api.handle(ErrorHandler.apiErrorHandler).toService
-}
+  def apiService: Service[Request, Response] = ExceptionFilter andThen api.handle(apiErrorHandler).toService
 
-object Api extends Api
+}
