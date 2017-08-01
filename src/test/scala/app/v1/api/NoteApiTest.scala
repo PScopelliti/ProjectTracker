@@ -28,6 +28,7 @@ class NoteApiTest extends FlatSpec with Matchers {
 
     val input = Input.delete(basePath + "/" + getSomeUUID)
 
+    // sut
     val result = noteApi.deleteNote(input)
 
     // Verify result
@@ -46,6 +47,7 @@ class NoteApiTest extends FlatSpec with Matchers {
     // configure stubs
     (noteService.getNoteById _).when(*).returns(generateNote(getSomeUUID, "Note 1"))
 
+    // sut
     val result = noteApi.getNoteById(input)
 
     // Verify result
@@ -65,6 +67,7 @@ class NoteApiTest extends FlatSpec with Matchers {
     // configure stubs
     (noteService.getNotes _).when().returns(List(generateNote(getSomeUUID, "Note 1"), generateNote(getSomeUUID, "Note 2")))
 
+    // sut
     val result = noteApi.getNotes(input)
 
     // Verify result
@@ -85,6 +88,7 @@ class NoteApiTest extends FlatSpec with Matchers {
     // configure stubs
     (noteService.createNote _).when(mockedFunction).returns(generateNote(getSomeUUID, "Note 1"))
 
+    // sut
     val result = noteApi.createNote(input)
 
     // Verify result
@@ -103,6 +107,7 @@ class NoteApiTest extends FlatSpec with Matchers {
     // configure stubs
     (noteService.patchNote _).when(*, *).returns(generateNote(getSomeUUID, "Note 1"))
 
+    // sut
     val result = noteApi.patchNote(input)
 
     // Verify result
@@ -119,6 +124,7 @@ class NoteApiTest extends FlatSpec with Matchers {
 
     val input = Input.get("some_path")
 
+    // sut
     val result = noteApi.getNotes(input)
 
     // Verify result

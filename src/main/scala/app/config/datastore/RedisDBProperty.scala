@@ -12,7 +12,6 @@ trait RedisDBProperty {
 
     def settingsTableName: String = configuration.getString("dynamodb.table.settings.name")
 
-
     def settingsTableKey: String = configuration.getString("dynamodb.table.settings.key")
   }
 
