@@ -16,7 +16,7 @@ val typesafeConfigVersion = "1.3.0"
 val typesafeLoggingVersion = "3.7.0"
 val logbackVersion = "1.2.3"
 val scalatestVersion = "3.0.3"
-val mockitoVersion = "1.9.5"
+val scalaMockVersion = "3.6.0"
 
 libraryDependencies ++= Seq(
 
@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
 
   "com.typesafe" % "config" % typesafeConfigVersion,
 
-  "org.mockito" % "mockito-all" % mockitoVersion % "test",
+  "org.scalamock" %% "scalamock-scalatest-support" % scalaMockVersion % "test",
   "org.scalatest" %% "scalatest" % scalatestVersion % "test"
 
 )
