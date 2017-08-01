@@ -48,3 +48,21 @@ val preferences =
     .setPreference(DanglingCloseParenthesis, Preserve)
 
 SbtScalariform.scalariformSettings ++ Seq(preferences)
+
+// Assembly
+mainClass in assembly := Some("app.Main")
+
+target in assembly := file("target")
+
+assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
+
+val meta = """META.INF(.)*""".r
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
+  case "BUILD" => MergeStrategy.discard
+  case meta(_)  => MergeStrategy.last // or MergeStrategy.discard, your choice
+  case other => MergeStrategy.defaultMergeStrategy(other)
+}
+
+exportJars:= true

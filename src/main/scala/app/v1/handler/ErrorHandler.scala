@@ -3,11 +3,10 @@ package app.v1.handler
 import app.utils.AppLogger
 import com.twitter.finagle.http.{ Request, Response, Status, Version }
 import com.twitter.util.Future
-import com.typesafe.scalalogging.StrictLogging
 import io.finch.Error.{ NotParsed, NotPresent, NotValid }
 import io.finch._
 
-trait ErrorHandler extends StrictLogging {
+trait ErrorHandler {
 
   self: AppLogger =>
 
