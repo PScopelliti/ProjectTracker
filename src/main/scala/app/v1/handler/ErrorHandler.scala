@@ -1,14 +1,14 @@
 package app.v1.handler
 
-import app.utils.AppLogger
 import com.twitter.finagle.http.{ Request, Response, Status, Version }
+import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.finch.Error.{ NotParsed, NotPresent, NotValid }
 import io.finch._
 
 trait ErrorHandler {
 
-  self: AppLogger =>
+  private val log = Logger.get(getClass)
 
   def apiErrorHandler: PartialFunction[Throwable, Output[Nothing]] = {
     case e: NotPresent => BadRequest(e)
@@ -23,11 +23,11 @@ trait ErrorHandler {
 
   private def unhandledException[REQUEST <: Request](request: REQUEST, t: Throwable, encoder: Encode[Throwable]): Future[Response] = {
     try {
-      logger.info(s"Unhandled exception on URI ${request.uri} with message $t")
+      log.info(s"Unhandled exception on URI ${request.uri} with message $t")
       Future.value(Response(Version.Http11, Status.InternalServerError))
     } catch {
       case e: Throwable => {
-        logger.error(s"Unable to log unhandled exception: $e")
+        log.error(s"Unable to log unhandled exception: $e")
         throw e
       }
     }

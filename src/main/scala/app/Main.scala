@@ -1,7 +1,6 @@
 package app
 
 import app.module.ServerModule
-import app.utils.AppLogger
 import app.v1.Api
 import app.v1.api.NoteApi
 import app.v1.handler.ErrorHandler
@@ -11,7 +10,6 @@ import com.twitter.server._
 object Main
   extends TwitterServer
   with ServerModule
-  with AppLogger
   with Api
   with NoteApi
   with AdminHttpServer

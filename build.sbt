@@ -13,7 +13,7 @@ val finchVersion = "0.15.1"
 val circeVersion = "0.8.0"
 val twitterServerVersion = "1.30.0"
 val typesafeConfigVersion = "1.3.0"
-val typesafeLoggingVersion = "3.7.0"
+val slf4jLoggingVersion = "1.7.25"
 val logbackVersion = "1.2.3"
 val scalatestVersion = "3.0.3"
 val scalaMockVersion = "3.6.0"
@@ -31,8 +31,7 @@ libraryDependencies ++= Seq(
 
   "com.twitter" %% "finagle-redis" % "6.45.0",
 
-  "ch.qos.logback" % "logback-classic" % logbackVersion,
-  "com.typesafe.scala-logging" %% "scala-logging" % typesafeLoggingVersion,
+  "org.slf4j" % "slf4j-simple" % slf4jLoggingVersion,
 
   "com.typesafe" % "config" % typesafeConfigVersion,
 
