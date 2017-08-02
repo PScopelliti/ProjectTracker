@@ -29,6 +29,8 @@ libraryDependencies ++= Seq(
 
   "com.twitter" %% "twitter-server" % twitterServerVersion,
 
+  "com.twitter" %% "finagle-redis" % "6.45.0",
+
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % typesafeLoggingVersion,
 
@@ -61,8 +63,8 @@ val meta = """META.INF(.)*""".r
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
   case "BUILD" => MergeStrategy.discard
-  case meta(_)  => MergeStrategy.last // or MergeStrategy.discard, your choice
+  case meta(_) => MergeStrategy.last
   case other => MergeStrategy.defaultMergeStrategy(other)
 }
 
-exportJars:= true
+exportJars := true
