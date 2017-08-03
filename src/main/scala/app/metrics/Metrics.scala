@@ -23,15 +23,15 @@ trait Metrics {
 
   /**
    * A stats receiver to use when sending metrics about downstream services. Stats are prefixed with 'clnt' and the
-   * name of the system. Do not use this for server metrics, use [[serverMetrics]] instead.
+   * name of the system. Do not use this for server metrics, use [[clientMetrics]] instead.
    */
-  final lazy val clientMetrics: AppStatsReceiver = baseMetrics.scope("clnt")
+  final lazy val clientMetrics: AppStatsReceiver = baseMetrics.scope("client")
 
   /**
    * A stats receiver to use when sending metrics about the service itself. Stats are prefixed with 'srv' and the
-   * name of the system. Do not use this for downstream client metrics, use [[clientMetrics]] instead.
+   * name of the system. Do not use this for downstream client metrics, use [[serverMetrics]] instead.
    */
-  final lazy val serverMetrics: AppStatsReceiver = baseMetrics.scope("srv", "finch-server")
+  final lazy val serverMetrics: AppStatsReceiver = baseMetrics.scope("server", "finch-server")
 }
 
 object Metrics extends Metrics

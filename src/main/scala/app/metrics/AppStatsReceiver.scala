@@ -8,7 +8,7 @@ import com.twitter.finagle.stats._
  * Wraps a `com.twitter.finagle.stats.StatsReceiver` to provide a more restricted interface than the Finagle version,
  * scoped only to what we need.
  *
- * Do not access this directly, instead use `com.redbubble.gql.util.metrics.Metrics` to obtain an appropriate isntance.
+ * Do not access this directly, instead use `Metrics` object to obtain an appropriate instance.
  */
 trait AppStatsReceiver {
   def scope(namespaces: String*): AppStatsReceiver
