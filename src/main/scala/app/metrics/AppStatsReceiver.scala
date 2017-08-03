@@ -11,6 +11,7 @@ import com.twitter.finagle.stats._
  * Do not access this directly, instead use `Metrics` object to obtain an appropriate instance.
  */
 trait AppStatsReceiver {
+
   def scope(namespaces: String*): AppStatsReceiver
 
   def counter(name: String*): Counter
@@ -23,6 +24,7 @@ trait AppStatsReceiver {
 }
 
 private final class AppStatsReceiver_(finagleStats: StatsReceiver) extends AppStatsReceiver {
+
   override def scope(namespaces: String*): AppStatsReceiver = new AppStatsReceiver_(finagleStats.scope(namespaces: _*))
 
   override def counter(name: String*): Counter = finagleStats.counter(name: _*)

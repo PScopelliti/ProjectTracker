@@ -56,7 +56,7 @@ mainClass in assembly := Some("app.Main")
 
 target in assembly := file("target")
 
-assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
+assemblyJarName in assembly := s"${name.value}_${version.value}.jar"
 
 val meta = """META.INF(.)*""".r
 
