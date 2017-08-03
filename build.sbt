@@ -9,14 +9,15 @@ version := "1.0"
 
 scalaVersion := "2.11.9"
 
-val finchVersion = "0.15.1"
-val circeVersion = "0.8.0"
-val twitterServerVersion = "1.30.0"
-val typesafeConfigVersion = "1.3.0"
-val slf4jLoggingVersion = "1.7.25"
-val logbackVersion = "1.2.3"
-val scalatestVersion = "3.0.3"
-val scalaMockVersion = "3.6.0"
+lazy val finagleVersion = "6.45.0"
+lazy val finchVersion = "0.15.1"
+lazy val circeVersion = "0.8.0"
+lazy val twitterServerVersion = "1.30.0"
+lazy val typesafeConfigVersion = "1.3.0"
+lazy val slf4jVersion = "1.7.25"
+lazy val logbackVersion = "1.2.3"
+lazy val scalatestVersion = "3.0.3"
+lazy val scalaMockVersion = "3.6.0"
 
 libraryDependencies ++= Seq(
 
@@ -28,10 +29,10 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser" % circeVersion,
 
   "com.twitter" %% "twitter-server" % twitterServerVersion,
+  "com.twitter" %% "finagle-stats" % finagleVersion,
+  "com.twitter" %% "finagle-redis" % finagleVersion,
 
-  "com.twitter" %% "finagle-redis" % "6.45.0",
-
-  "org.slf4j" % "slf4j-simple" % slf4jLoggingVersion,
+  "org.slf4j" % "slf4j-simple" % slf4jVersion,
 
   "com.typesafe" % "config" % typesafeConfigVersion,
 
