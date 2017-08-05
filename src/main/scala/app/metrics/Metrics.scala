@@ -31,7 +31,7 @@ trait Metrics {
    * A stats receiver to use when sending metrics about the service itself. Stats are prefixed with 'srv' and the
    * name of the system. Do not use this for downstream client metrics, use [[serverMetrics]] instead.
    */
-  final lazy val serverMetrics: AppStatsReceiver = baseMetrics.scope("server", "finch-server")
+  final lazy val serverMetrics: AppStatsReceiver = baseMetrics.scope("server")
 }
 
 object Metrics extends Metrics

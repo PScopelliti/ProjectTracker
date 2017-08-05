@@ -3,8 +3,11 @@ package app.module
 import app.config.application.ApplicationProperty
 import app.v1.Api
 import com.twitter.finagle.Http
+import com.twitter.finagle.Http.Netty4Impl
 import com.twitter.logging.Logger
-import com.twitter.util.{Await, Duration, StorageUnit}
+import com.twitter.util.Await
+import com.twitter.util.Duration.fromSeconds
+import com.twitter.util.StorageUnit.fromMegabytes
 
 trait ServerModule {
 
@@ -17,9 +20,9 @@ trait ServerModule {
 
     val server = Http.server
       .withLabel(applicationProperty.systemId)
-      .withRequestTimeout(Duration.fromSeconds(applicationProperty.requestTimeoutInSeconds))
-      .withMaxRequestSize(StorageUnit.fromMegabytes(applicationProperty.maxRequestSizeInMB))
-      .configured(Http.Netty4Impl)
+      .withRequestTimeout(fromSeconds(applicationProperty.requestTimeoutInSeconds))
+      .withMaxRequestSize(fromMegabytes(applicationProperty.maxRequestSizeInMB))
+      .configured(Netty4Impl)
       .serve(s":${applicationProperty.applicationPort}", apiService)
 
     onExit {

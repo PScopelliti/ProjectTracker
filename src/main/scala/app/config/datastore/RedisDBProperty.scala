@@ -10,9 +10,9 @@ trait RedisDBProperty {
 
   class RedisDBProperty {
 
-    def settingsTableName: String = configuration.getString("dynamodb.table.settings.name")
+    def url: String = configuration.getString("redis.url")
 
-    def settingsTableKey: String = configuration.getString("dynamodb.table.settings.key")
+    def port: String = configuration.getString("redis.port")
   }
 
 }
