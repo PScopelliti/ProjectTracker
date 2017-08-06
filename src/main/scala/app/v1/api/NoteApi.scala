@@ -6,9 +6,10 @@ import app.v1.model.Note
 import app.v1.service.ServiceComponent
 import com.twitter.finagle.http.Status
 import com.twitter.logging.Logger
+import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{ Endpoint, _ }
+import io.finch.{Endpoint, _}
 
 trait NoteApi {
 
@@ -33,7 +34,7 @@ trait NoteApi {
       Ok(noteService.getNoteById(uuid))
     }
 
-    def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
+    def createNote: Endpoint[Future[Note]] = post(basePath :: jsonBody[UUID => Note]) {
       (noteGen: UUID => Note) =>
         {
           log.info("Calling createNote endpoint... ")
