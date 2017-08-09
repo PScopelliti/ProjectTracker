@@ -4,7 +4,7 @@ import app.config.application.ApplicationProperty
 import app.v1.Api
 import com.twitter.finagle.Http
 import com.twitter.logging.Logger
-import com.twitter.util.{Await, Duration, StorageUnit}
+import com.twitter.util.{ Await, Duration, StorageUnit }
 
 trait ServerModule {
 
