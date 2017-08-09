@@ -1,13 +1,15 @@
 package app.v1.service
 
+import java.lang.{ Boolean => JBoolean, Long => JLong }
 import java.util.UUID
 
 import app.module.RedisClientModule
 import app.v1.model.Note
-import com.twitter.finagle.redis.util.StringToBuf
+import com.twitter.finagle.redis.util.{ BufToString, StringToBuf }
 import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.circe.generic.auto._
+import io.circe.parser._
 import io.circe.syntax._
 
 trait ServiceDefault extends ServiceComponent {
@@ -27,26 +29,43 @@ trait ServiceDefault extends ServiceComponent {
 
       val result = redisClient.set(StringToBuf(uuid.toString), StringToBuf(note.asJson.noSpaces))
 
-      result.flatMap(f => Future(note))
+      result.flatMap(_ => Future(note))
     }
 
-    def getNotes: List[Note] = {
+    def getNotes: Future[List[Note]] = {
       log.info("Calling getNotes service... ")
-      List(Note(noteUUID.getUUID, "Note 1"), Note(noteUUID.getUUID, "Note 2"))
+      Future(List(Note(noteUUID.getUUID, "Note 1"), Note(noteUUID.getUUID, "Note 2")))
     }
 
-    def getNoteById(uuid: UUID): Note = {
+    def getNoteById(uuid: UUID): Future[Note] = {
       log.info("Calling getNoteById service... ")
       Note(uuid, "Note 1")
+
+      redisClient.get(StringToBuf(uuid.toString)).flatMap(_ match {
+        case Some(value) => {
+          val note = BufToString(value)
+
+          val r = decode[Note](note)
+
+          Future(r.right.get)
+        }
+        case None => Future.exception(new Exception)
+      })
     }
 
-    def deleteNote(uuid: UUID): Unit = {
+    def deleteNote(uuid: UUID): Future[Boolean] = {
       log.info("Calling deleteNote service... ")
-      0
+
+      redisClient.dels(Seq(StringToBuf(uuid.toString))).flatMap(_ match {
+        case v if v == 1 => Future(true)
+        case _           => Future(false)
+      })
+
     }
 
     def patchNote(uuid: UUID, note: Note): Note = {
       log.info("Calling patchNote service... ")
+
       note
     }
   }

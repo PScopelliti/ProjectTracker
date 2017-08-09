@@ -6,7 +6,6 @@ import app.v1.model.Note
 import app.v1.service.ServiceComponent
 import com.twitter.finagle.http.Status
 import com.twitter.logging.Logger
-import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
 import io.finch.{Endpoint, _}
@@ -25,21 +24,20 @@ trait NoteApi {
     def endpoints = (getNotes :+: getNoteById :+: createNote :+: deleteNote :+: patchNote)
 
     def getNotes: Endpoint[List[Note]] = get(basePath) {
-      log.info("Calling getNotes endpoint... ")
-      Ok(noteService.getNotes)
+      //log.info("Calling getNotes endpoint... ")
+      val result = noteService.getNotes.map(Ok)
+      result
     }
 
     def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
-      Ok(noteService.getNoteById(uuid))
+      noteService.getNoteById(uuid).map(Ok)
     }
 
-    def createNote: Endpoint[Future[Note]] = post(basePath :: jsonBody[UUID => Note]) {
-      (noteGen: UUID => Note) =>
-        {
-          log.info("Calling createNote endpoint... ")
-          Created(noteService.createNote(noteGen))
-        }
+    def createNote: Endpoint[Note] = get(basePath) {
+        log.info("Calling createNote endpoint... ")
+        val result = noteService.createNote(null)
+        result.map(Created)
     }
 
     def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>

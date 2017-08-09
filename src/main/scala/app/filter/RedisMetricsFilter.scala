@@ -2,9 +2,9 @@ package app.filter
 
 import app.metrics.AppStatsReceiver
 import app.metrics.Metrics.clientMetrics
-import com.twitter.finagle.redis.protocol.{Command, Reply}
+import com.twitter.finagle.redis.protocol.{ Command, Reply }
 import com.twitter.finagle.stats.Stat
-import com.twitter.finagle.{Filter, Service}
+import com.twitter.finagle.{ Filter, Service }
 import com.twitter.util.Future
 
 abstract class SimpleRedisFilter[Command, Reply] extends Filter[Command, Reply, Command, Reply]
