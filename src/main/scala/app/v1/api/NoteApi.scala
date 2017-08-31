@@ -21,23 +21,19 @@ trait NoteApi {
 
   class DefaultNoteApi {
 
-    def endpoints = (getNotes :+: getNoteById :+: createNote :+: deleteNote :+: patchNote)
-
-    def getNotes: Endpoint[List[Note]] = get(basePath) {
-      //log.info("Calling getNotes endpoint... ")
-      val result = noteService.getNotes.map(Ok)
-      result
-    }
+    def endpoints = (getNoteById :+: createNote :+: deleteNote :+: patchNote)
 
     def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
-      noteService.getNoteById(uuid).map(Ok)
+      Ok(noteService.getNoteById(uuid))
     }
 
-    def createNote: Endpoint[Note] = get(basePath) {
+    def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
+      (noteGen: UUID => Note) => {
         log.info("Calling createNote endpoint... ")
-        val result = noteService.createNote(null)
-        result.map(Created)
+
+        noteService.createNote(noteGen).map(Created)
+      }
     }
 
     def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
