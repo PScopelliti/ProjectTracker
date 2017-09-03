@@ -13,8 +13,6 @@ trait ServiceComponent {
 
     def createNote(noteGen: UUID => Note): Future[Note]
 
-    def getNotes: Future[List[Note]]
-
     def getNoteById(uuid: UUID): Future[Note]
 
     def deleteNote(uuid: UUID): Future[Boolean]

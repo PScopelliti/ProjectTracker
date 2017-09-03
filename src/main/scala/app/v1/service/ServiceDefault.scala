@@ -1,6 +1,5 @@
 package app.v1.service
 
-import java.lang.{ Boolean => JBoolean, Long => JLong }
 import java.util.UUID
 
 import app.module.RedisClientModule
@@ -30,11 +29,6 @@ trait ServiceDefault extends ServiceComponent {
       val result = redisClient.set(StringToBuf(uuid.toString), StringToBuf(note.asJson.noSpaces))
 
       result.flatMap(_ => Future(note))
-    }
-
-    def getNotes: Future[List[Note]] = {
-      log.info("Calling getNotes service... ")
-      Future(List(Note(noteUUID.getUUID, "Note 1"), Note(noteUUID.getUUID, "Note 2")))
     }
 
     def getNoteById(uuid: UUID): Future[Note] = {

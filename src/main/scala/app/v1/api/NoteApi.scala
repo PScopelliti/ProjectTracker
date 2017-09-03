@@ -8,7 +8,7 @@ import com.twitter.finagle.http.Status
 import com.twitter.logging.Logger
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{Endpoint, _}
+import io.finch.{ Endpoint, _ }
 
 trait NoteApi {
 
@@ -25,15 +25,16 @@ trait NoteApi {
 
     def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
-      Ok(noteService.getNoteById(uuid))
+      noteService.getNoteById(uuid).map(Ok)
     }
 
     def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
-      (noteGen: UUID => Note) => {
-        log.info("Calling createNote endpoint... ")
+      (noteGen: UUID => Note) =>
+        {
+          log.info("Calling createNote endpoint... ")
 
-        noteService.createNote(noteGen).map(Created)
-      }
+          noteService.createNote(noteGen).map(Created)
+        }
     }
 
     def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>

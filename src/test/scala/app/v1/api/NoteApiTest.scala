@@ -11,9 +11,9 @@ import com.twitter.finagle.http.Status
 import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{Application, EndpointResult, Input}
+import io.finch.{ Application, EndpointResult, Input }
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 trait NoteApiMock extends NoteApi with ServiceComponent with MockFactory {
   val noteService: NoteService = stub[NoteService]
@@ -46,7 +46,7 @@ class NoteApiTest extends FlatSpec with Matchers {
     val input = Input.get(basePath + "/" + getSomeUUID)
 
     // configure stubs
-    (noteService.getNoteById _).when(*).returns(generateNote(getSomeUUID, "Note 1"))
+    (noteService.getNoteById _).when(*).returns(Future(generateNote(getSomeUUID, "Note 1")))
 
     // sut
     val result = noteApi.getNoteById(input)
@@ -67,7 +67,7 @@ class NoteApiTest extends FlatSpec with Matchers {
     val mockedFunction = mockFunction[UUID, Note]
 
     // configure stubs
-    (noteService.createNote _).when(mockedFunction).returns(Future.value(generateNote(getSomeUUID, "Note 1")))
+    (noteService.createNote _).when(*).returns(Future.value(generateNote(getSomeUUID, "Note 1")))
 
     // sut
     val result = noteApi.createNote(input)
@@ -113,7 +113,6 @@ class NoteApiTest extends FlatSpec with Matchers {
 
     // Verify expectations met
     (noteService.patchNote _).verify(*, *).never()
-    (noteService.getNotes _).verify().never()
     (noteService.getNoteById _).verify(*).never()
     (noteService.createNote _).verify(*).never()
     (noteService.deleteNote _).verify(*).never()
