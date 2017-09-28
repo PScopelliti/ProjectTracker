@@ -4,13 +4,14 @@ import java.util.UUID
 
 import app.config.ConfigurationLoader
 import app.config.datastore.RedisDBProperty
+import app.module.RedisClientModule
 import app.support.NoteStub.generateNote
 import app.support.UUIDStub.getSomeUUID
 import app.v1.model.Note
 import com.twitter.finagle.redis.Client
 import com.twitter.util.Future
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 trait UUIDTest extends ServiceDefault with UUIDComponent with RedisClientModule with RedisDBProperty with ConfigurationLoader with MockFactory {
   val noteUUID: NoteUUID = stub[NoteUUID]
@@ -28,7 +29,7 @@ class ServiceDefaultTest extends FlatSpec with Matchers {
 
     mockUUIDGenerator.when(getSomeUUID).returns(generateNote(getSomeUUID, "Note 1"))
     (noteUUID.getUUID _).when().returns(getSomeUUID)
-    (redisClient.set _).when(*,*).returns(Future.value(Unit))
+    (redisClient.set _).when(*, *).returns(Future.value(Unit))
 
     //sut
     noteService.createNote(mockUUIDGenerator) should be(generateNote(getSomeUUID, "Note 1"))

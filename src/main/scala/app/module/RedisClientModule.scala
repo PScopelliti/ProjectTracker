@@ -15,5 +15,5 @@ trait RedisClientModule {
     .newClient(s"${dbProperties.url}:${dbProperties.port}", "redis-client")
 
   val redisClient: Client = Client(redisServiceFactory)
-
+  
 }
