@@ -2,7 +2,7 @@ package app.v1.service
 
 import java.util.UUID
 
-trait UUIDComponent {
+trait UUIDService {
 
   val noteUUID: NoteUUID
 

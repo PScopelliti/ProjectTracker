@@ -4,7 +4,7 @@ import java.util.UUID
 
 import app.config.ConfigurationLoader
 import app.config.datastore.RedisDBProperty
-import app.module.RedisClientModule
+import app.module.RedisClientFactory
 import app.support.NoteStub.generateNote
 import app.support.UUIDStub.getSomeUUID
 import app.v1.model.Note
@@ -13,7 +13,7 @@ import com.twitter.util.Future
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{ FlatSpec, Matchers }
 
-trait UUIDTest extends ServiceDefault with UUIDComponent with RedisClientModule with RedisDBProperty with ConfigurationLoader with MockFactory {
+trait UUIDTest extends ServiceDefault with UUIDService with RedisClientFactory with RedisDBProperty with ConfigurationLoader with MockFactory {
   val noteUUID: NoteUUID = stub[NoteUUID]
   override val redisClient: Client = stub[Client]
 }

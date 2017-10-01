@@ -6,7 +6,6 @@ import java.util.UUID
 import app.support.NoteStub.generateNote
 import app.support.UUIDStub.getSomeUUID
 import app.v1.model.Note
-import app.v1.service.ServiceComponent
 import com.twitter.finagle.http.Status
 import com.twitter.util.Future
 import io.circe.generic.auto._
