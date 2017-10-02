@@ -14,7 +14,7 @@ import io.finch.{ Endpoint, _ }
 
 trait NoteApi {
 
-  self: UUIDService =>
+  self: UUIDService with RepositoryConfig =>
 
   private val basePath = "api" :: "v1" :: "notes"
   private val log = Logger.get(getClass)
@@ -27,7 +27,7 @@ trait NoteApi {
 
     def getNoteById: Endpoint[Option[Note]] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
-      RedisConf.noteServiceRepository.getItem(uuid).map(Ok)
+      noteServiceRepository.getItem(uuid).map(Ok)
     }
 
     def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
@@ -36,20 +36,20 @@ trait NoteApi {
           log.info("Calling createNote endpoint... ")
 
           noteGen andThen { note =>
-            RedisConf.noteServiceRepository.setItem(note.id, note).map(Created)
+            noteServiceRepository.setItem(note.id, note).map(Created)
           } apply (noteUUID.getUUID)
         }
     }
 
     def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
       log.info("Calling deleteNote endpoint... ")
-      RedisConf.noteServiceRepository.deleteItem(uuid)
+      noteServiceRepository.deleteItem(uuid)
       NoContent[Unit].withStatus(Status.Ok)
     }
 
     def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note]) { (uuid: UUID, note: Note) =>
       log.info("Calling patchNote endpoint... ")
-      RedisConf.noteServiceRepository.setItem(note.id, note)
+      noteServiceRepository.setItem(note.id, note)
       Ok(note)
     }
 
@@ -57,9 +57,3 @@ trait NoteApi {
 
 }
 
-trait RedisConf {
-  private implicit val redisClient: Client = RedisClientFactory.redisClient
-  implicit val noteServiceRepository: NoteServiceRepository = new RedisNodeServiceRepository()
-}
-
-object RedisConf extends RedisConf
