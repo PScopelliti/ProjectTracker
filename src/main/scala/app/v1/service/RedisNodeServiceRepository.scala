@@ -18,28 +18,33 @@ class RedisNodeServiceRepository(implicit val redisClient: Client) extends NoteS
 
   def getItem(uuid: UUID): Future[Option[Note]] = {
 
-    redisClient.get(StringToBuf(uuid.toString)).flatMap(_ match {
-      case Some(value) => {
-        val note = BufToString(value)
+    val returnVal = new Promise[Option[Note]]
 
-        decode[Note](note) match {
-          case Left(msg) => {
-            log.error(s"Failed to parse Note from Redis: ${msg}")
-            Future.exception(new Exception(msg))
-          }
-          case Right(result) => {
-            log.info(s"Found result in redis : key - ${uuid}")
-            Future(Some(result))
+    redisClient.get(StringToBuf(uuid.toString))
+      .onSuccess {
+        case Some(value) => {
+          decode[Note](BufToString(value)) match {
+            case Left(msg) => {
+              log.error(s"Failed to parse Note from Redis: ${msg}")
+              Future.exception(new Exception(msg))
+            }
+            case Right(result) => {
+              log.info(s"Found result in redis : key - ${uuid} - Value ${result}")
+              returnVal.setValue(Some(result))
+            }
           }
         }
-
+        case None => {
+          log.info(s"No value found in redis with key: ${uuid}")
+          returnVal.setValue(None)
+        }
       }
-      case None => {
-        log.info(s"No value found in redis with key: ${uuid}")
-        Future(None)
+      .onFailure { _ =>
+        log.error(s"Failed to get entry with key: ${uuid}")
+        returnVal.setException(new FileNotFoundException())
       }
-    })
 
+    returnVal
   }
 
   def setItem(uuid: UUID, note: Note): Future[Note] = {
@@ -53,7 +58,7 @@ class RedisNodeServiceRepository(implicit val redisClient: Client) extends NoteS
         returnVal.setValue(Note(uuid, note.text))
       }
       .onFailure { _ =>
-        log.info(s"Failed to insert entry with key: ${uuid}")
+        log.error(s"Failed to insert entry with key: ${uuid}")
         returnVal.setException(new FileNotFoundException())
       }
 
@@ -62,17 +67,25 @@ class RedisNodeServiceRepository(implicit val redisClient: Client) extends NoteS
 
   def deleteItem(uuid: UUID): Future[Boolean] = {
 
-    redisClient.dels(Seq(StringToBuf(uuid.toString))).flatMap(_ match {
-      case v if v == 1 => {
-        log.info(s"Successfully deleted note in redis key: ${uuid}")
-        Future(true)
-      }
-      case _ => {
-        log.error(s"Failed to delete note in redis with key: ${uuid}")
-        Future(false)
-      }
-    })
+    val returnVal = new Promise[Boolean]
 
+    redisClient.dels(Seq(StringToBuf(uuid.toString)))
+      .onSuccess {
+        case v if v == 1 => {
+          log.info(s"Successfully deleted note in redis key: ${uuid}")
+          Future(true)
+        }
+        case _ => {
+          log.error(s"Failed to delete note in redis with key: ${uuid}")
+          Future(false)
+        }
+      }
+      .onSuccess { _ =>
+        log.error(s"Failed to delete entry with key: ${uuid}")
+        returnVal.setException(new FileNotFoundException())
+      }
+
+    returnVal
   }
 
 }
