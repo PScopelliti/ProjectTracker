@@ -2,7 +2,7 @@ package app.v1.service
 
 import java.util.UUID
 
-trait UUIDRandom extends UUIDComponent {
+trait UUIDRandom extends UUIDService {
 
   val noteUUID: RandomNoteUUID = new RandomNoteUUID
 

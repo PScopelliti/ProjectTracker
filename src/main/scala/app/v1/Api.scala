@@ -4,6 +4,7 @@ import app.filter.{ RequestLoggingFilter, RoutingMetricsFilter }
 import app.metrics.Metrics.serverMetrics
 import app.v1.api.NoteApi
 import app.v1.handler.ErrorHandler
+import app.v1.service.UUIDService
 import com.twitter.finagle.Service
 import com.twitter.finagle.http.filter.ExceptionFilter
 import com.twitter.finagle.http.{ Request, Response }
@@ -14,7 +15,7 @@ object RouteMetricsFilter extends RoutingMetricsFilter(serverMetrics)
 
 trait Api {
 
-  self: ErrorHandler with NoteApi =>
+  self: ErrorHandler with NoteApi with UUIDService =>
 
   private def api = noteApi.endpoints
 
