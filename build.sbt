@@ -19,11 +19,12 @@ val preferences =
 val meta = """META.INF(.)*""".r
 
 lazy val `api-gateway` = (project in file("api-gateway")).
-  settings(commonSettings ++ apiGatewaySettings)
+  settings(commonSettings ++ apiGatewaySettings).
+  settings(libraryDependencies ++= apiGatewayDependencies)
 
 lazy val `note-service` = (project in file("note-service")).
   settings(commonSettings ++ noteServiceSettings).
-  settings(libraryDependencies ++= dependencies).
+  settings(libraryDependencies ++= noteServiceDependencies).
   settings(SbtScalariform.scalariformSettings ++ Seq(preferences)).
   settings(Seq(
     // Assembly
