@@ -3,8 +3,6 @@ package app.v1.service
 import java.util.UUID
 
 import app.config.ConfigurationLoader
-import app.config.datastore.RedisDBProperty
-import app.module.RedisClientFactory
 import app.support.NoteStub.generateNote
 import app.support.UUIDStub.getSomeUUID
 import app.v1.model.Note

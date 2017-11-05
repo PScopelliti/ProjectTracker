@@ -1,10 +1,10 @@
 package app
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.{Date, UUID}
+import java.util.{ Date, UUID }
 
 import app.model.OAuthUser
-import com.twitter.finagle.oauth2.{AccessToken, AuthInfo, DataHandler}
+import com.twitter.finagle.oauth2.{ AccessToken, AuthInfo, DataHandler }
 import com.twitter.util.Future
 
 import scala.collection.JavaConverters._
@@ -12,13 +12,12 @@ import scala.concurrent.duration._
 
 object InMemoryDataHandler extends DataHandler[OAuthUser] {
   private[this] case class AuthData(
-                                     username: String,
-                                     password: String,
-                                     clientId: String,
-                                     clientSecret: String,
-                                     authCode: String,
-                                     user: OAuthUser
-                                   )
+    username: String,
+    password: String,
+    clientId: String,
+    clientSecret: String,
+    authCode: String,
+    user: OAuthUser)
 
   private[this] val clients = List[AuthData](
     AuthData(
@@ -27,17 +26,14 @@ object InMemoryDataHandler extends DataHandler[OAuthUser] {
       "user_id",
       "user_secret",
       "user_auth_code",
-      OAuthUser("user", "John Smith")
-    ),
+      OAuthUser("user", "John Smith")),
     AuthData(
       "admin_name",
       "admin_password",
       "admin_id",
       "admin_secret",
       "admin_auth_code",
-      OAuthUser("admin", "Brad Johnes")
-    )
-  )
+      OAuthUser("admin", "Brad Johnes")))
 
   private[this] val accessTokens = new ConcurrentHashMap[String, AccessToken]().asScala
   private[this] val authInfosByAccessToken = new ConcurrentHashMap[String, AuthInfo[OAuthUser]]().asScala
@@ -48,8 +44,7 @@ object InMemoryDataHandler extends DataHandler[OAuthUser] {
       refreshToken = Some(s"RT-${UUID.randomUUID()}"),
       scope = None,
       expiresIn = Some(1.minute.toSeconds),
-      createdAt = new Date()
-    )
+      createdAt = new Date())
   }
 
   override def validateClient(clientId: String, clientSecret: String, grantType: String): Future[Boolean] = {
@@ -92,8 +87,7 @@ object InMemoryDataHandler extends DataHandler[OAuthUser] {
           ad.user,
           ad.clientId,
           Some(ad.user.scope),
-          None
-        )))
+          None)))
       case None => Future.value(None)
     }
   }
@@ -106,8 +100,7 @@ object InMemoryDataHandler extends DataHandler[OAuthUser] {
   }
 
   override def findClientUser(
-                               clientId: String, clientSecret: String, scope: Option[String]
-                             ): Future[Option[OAuthUser]] = {
+    clientId: String, clientSecret: String, scope: Option[String]): Future[Option[OAuthUser]] = {
     clients.find { case ad => clientId.equals(ad.clientId) && clientSecret.equals(ad.clientSecret) } match {
       case Some(ad) => Future.value(Some(ad.user))
       case None => Future.value(None)

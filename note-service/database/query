@@ -1,0 +1,22 @@
+
+
+CREATE KEYSPACE test_gs with replication = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+
+
+create table test_gs.note(
+    noteid      uuid,
+    userid      uuid,
+    content     text,
+    created     timestamp,
+    PRIMARY KEY (noteid, created));
+
+
+
+INSERT INTO test_gs.note(noteid, userid, content, created) values ( uuid(), uuid(), 'some content1', toTimestamp(now()));
+INSERT INTO test_gs.note(noteid, userid, content, created) values ( uuid(), uuid(), 'some content2', toTimestamp(now()));
+INSERT INTO test_gs.note(noteid, userid, content, created) values ( uuid(), uuid(), 'some content3', toTimestamp(now()));
+
+
+CREATE INDEX note_by_user ON test_gs.note ( userid );
+
+

@@ -2,11 +2,9 @@ package app.v1.api
 
 import java.util.UUID
 
-import app.module.RedisClientFactory
 import app.v1.model.Note
-import app.v1.service.{ NoteServiceRepository, RedisNodeServiceRepository, UUIDService }
+import app.v1.service.UUIDService
 import com.twitter.finagle.http.Status
-import com.twitter.finagle.redis.Client
 import com.twitter.logging.Logger
 import io.circe.generic.auto._
 import io.finch.circe._
@@ -23,11 +21,11 @@ trait NoteApi {
 
   class DefaultNoteApi {
 
-    def endpoints = (getNoteById :+: createNote :+: deleteNote :+: patchNote)
+    def endpoints = (getNoteById :+: createNote :+: deleteNote :+: updateNote :+: getAllNotes)
 
     def getNoteById: Endpoint[Option[Note]] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
-      noteServiceRepository.getItem(uuid).map(Ok)
+      noteServiceRepository.getNote(uuid).map(Ok)
     }
 
     def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
@@ -36,21 +34,31 @@ trait NoteApi {
           log.info("Calling createNote endpoint... ")
 
           noteGen andThen { note =>
-            noteServiceRepository.setItem(note.id, note).map(Created)
+            noteServiceRepository.setNote(note.id, note).map(Created)
+          } apply (noteUUID.getUUID)
+        }
+    }
+
+    def updateNote: Endpoint[Option[Note]] = post(basePath :: jsonBody[UUID => Note]) {
+      (noteGen: UUID => Note) =>
+        {
+          log.info("Calling updateNote endpoint... ")
+
+          noteGen andThen { note =>
+            noteServiceRepository.updateNote(note.id, note).map(Created)
           } apply (noteUUID.getUUID)
         }
     }
 
     def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
       log.info("Calling deleteNote endpoint... ")
-      noteServiceRepository.deleteItem(uuid)
+      noteServiceRepository.deleteNote(uuid)
       NoContent[Unit].withStatus(Status.Ok)
     }
 
-    def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note]) { (uuid: UUID, note: Note) =>
-      log.info("Calling patchNote endpoint... ")
-      noteServiceRepository.setItem(note.id, note)
-      Ok(note)
+    def getAllNotes: Endpoint[List[Note]] = get(basePath) {
+      log.info("Calling getAllNote endpoint")
+      noteServiceRepository.getAllNote().map(Ok)
     }
 
   }

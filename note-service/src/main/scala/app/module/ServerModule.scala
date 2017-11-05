@@ -15,7 +15,21 @@ trait ServerModule {
 
   private val log = Logger.get(getClass)
 
+  def welcomeBanner: List[String] =
+    List(
+      """                                 _ _                """,
+      """              ____ __  _ _  _ _ (_| )_              """,
+      """-------------| __// _)| '_)| '_)| | |_--------------""",
+      """-------------| _| \__)|_|--|_|--|_|\__)-------------""",
+      """=============|_|====================================""",
+      """                                                    """,
+      """------------ THE  W E B  C R A W L E R -------------""",
+      ""
+    )
+
   premain {
+
+    welcomeBanner.foreach(log.info(_))
     log.info("[Finch] server is starting ...")
 
     val server = Http.server
