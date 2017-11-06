@@ -7,8 +7,8 @@ import com.google.common.util.concurrent.ListenableFuture
 
 trait RepositoryConfig {
 
-  implicit lazy val session: ListenableFuture[Session] = CassandraClientFactory.session
-  implicit val noteServiceRepository: NoteServiceRepository = new CassandraNodeServiceRepository
+  implicit def session: ListenableFuture[Session] = CassandraClientFactory.session
+
+  implicit def noteServiceRepository: NoteServiceRepository = new CassandraNodeServiceRepository
 
 }
-

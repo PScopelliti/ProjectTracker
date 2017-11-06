@@ -4,7 +4,7 @@ import java.util.UUID
 
 trait UUIDService {
 
-  val noteUUID: NoteUUID
+  def noteUUID: NoteUUID
 
   trait NoteUUID {
     def getUUID: UUID
