@@ -13,7 +13,7 @@ trait NoteServiceRepository {
 
   def deleteNote(uuid: UUID): Future[Boolean]
 
-  def updateNote(uuid: UUID, note: Note): Future[Option[Note]]
+  def updateNote(uuid: UUID, note: Note): Future[Note]
 
   def getAllNote(): Future[List[Note]]
 }

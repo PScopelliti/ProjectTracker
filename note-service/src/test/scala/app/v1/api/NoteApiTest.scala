@@ -8,6 +8,8 @@ import com.datastax.driver.core.Session
 import com.google.common.util.concurrent.ListenableFuture
 import com.twitter.finagle.http.Status
 import com.twitter.util.Future
+import io.circe.generic.auto._
+import io.finch.circe._
 import io.finch.{EndpointResult, Input}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FlatSpec, Matchers}
@@ -21,12 +23,13 @@ trait CassandraMock extends NoteApi
 
   override implicit val noteServiceRepository: NoteServiceRepository = stub[NoteServiceRepository]
 
-  override def noteUUID: NoteUUID = stub[NoteUUID]
+  override val noteUUID: NoteUUID = stub[NoteUUID]
 }
 
 class NoteApiTest extends FlatSpec with Matchers {
 
   val someUUID = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d")
+  val someNote = generateNote(someUUID, "Note 1")
   val basePath = "/api/v1/notes"
 
   behavior of "Delete endpoint "
@@ -78,14 +81,14 @@ class NoteApiTest extends FlatSpec with Matchers {
     val input = Input.get(basePath + "/" + someUUID)
 
     // configure stubs
-    (noteServiceRepository.getNote _).when(*).returns(Future(Some(generateNote(someUUID, "Note 1"))))
+    (noteServiceRepository.getNote _).when(*).returns(Future(Some(someNote)))
 
     // sut
     val result = noteApi.getNoteById(input)
 
     // Verify result
     result.awaitOutputUnsafe().map(_.status).get should be(Status.Ok)
-    result.awaitOutputUnsafe().map(_.value).get should be(generateNote(someUUID, "Note 1"))
+    result.awaitOutputUnsafe().map(_.value).get should be(someNote)
 
     // Verify expectations met
     (noteServiceRepository.getNote _).verify(someUUID).once()
@@ -108,6 +111,54 @@ class NoteApiTest extends FlatSpec with Matchers {
 
     // Verify expectations met
     (noteServiceRepository.getNote _).verify(someUUID).once()
+  }
+
+  behavior of "Create endpoint "
+
+  it should " return 201 if note is successfully created" in new CassandraMock {
+
+    override val noteApi: DefaultNoteApi = new DefaultNoteApi
+
+    val input = Input.post(basePath).withBody(someNote)
+
+    // configure stubs
+    (noteServiceRepository.setNote _).when(*, someNote).returns(Future(someNote))
+    (noteUUID.getUUID _).when().returns(someUUID)
+
+    // sut
+    val result = noteApi.createNote(input)
+
+    // Verify result
+    result.awaitOutputUnsafe().map(_.status).get should be(Status.Created)
+    result.awaitOutputUnsafe().map(_.value).get should be(someNote)
+
+    // Verify expectations met
+    (noteServiceRepository.setNote _).verify(someUUID, someNote)
+    (noteUUID.getUUID _).verify()
+  }
+
+  behavior of "Update endpoint "
+
+  it should " return 200 if note is successfully updated" in new CassandraMock {
+
+    override val noteApi: DefaultNoteApi = new DefaultNoteApi
+
+    val input = Input.patch(basePath + someUUID).withBody(someNote)
+
+    // configure stubs
+    (noteServiceRepository.getNote _).when(someUUID).returns(Future(Some(someNote)))
+    (noteServiceRepository.updateNote _).when(someUUID, someNote).returns(Future(someNote))
+
+    // sut
+    val result = noteApi.patchNote(input)
+
+    // Verify result
+    result.awaitOutputUnsafe().map(_.status).get should be(Status.Ok)
+    result.awaitOutputUnsafe().map(_.value).get should be(someNote)
+
+    // Verify expectations met
+    (noteServiceRepository.updateNote _).verify(someUUID, someNote)
+    (noteServiceRepository.getNote _).verify(someUUID)
   }
 
   "Not implemented endpoint " should " not return any note" in new CassandraMock {

@@ -33,7 +33,7 @@ class CassandraNodeServiceRepository(implicit val session: ListenableFuture[Sess
     null
   }
 
-  def updateNote(uuid: UUID, note: Note): Future[Option[Note]] = {
+  def updateNote(uuid: UUID, note: Note): Future[Note] = {
     null
   }
 
