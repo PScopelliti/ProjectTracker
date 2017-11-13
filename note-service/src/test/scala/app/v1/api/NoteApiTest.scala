@@ -5,7 +5,6 @@ import java.util.UUID
 import app.support.NoteStub.generateNote
 import app.v1.service.{NoteServiceRepository, UUIDService}
 import com.datastax.driver.core.Session
-import com.google.common.util.concurrent.ListenableFuture
 import com.twitter.finagle.http.Status
 import com.twitter.util.Future
 import io.circe.generic.auto._
@@ -19,7 +18,7 @@ trait CassandraMock extends NoteApi
   with RepositoryConfig
   with MockFactory {
 
-  override implicit val session: ListenableFuture[Session] = mock[ListenableFuture[Session]]
+  override implicit val session: Session = mock[Session]
 
   override implicit val noteServiceRepository: NoteServiceRepository = stub[NoteServiceRepository]
 
@@ -138,12 +137,12 @@ class NoteApiTest extends FlatSpec with Matchers {
   }
 
   behavior of "Update endpoint "
-
+  // TODO Add error for non happy path
   it should " return 200 if note is successfully updated" in new CassandraMock {
 
     override val noteApi: DefaultNoteApi = new DefaultNoteApi
 
-    val input = Input.patch(basePath + someUUID).withBody(someNote)
+    val input = Input.patch(basePath + "/" + someUUID).withBody(someNote)
 
     // configure stubs
     (noteServiceRepository.getNote _).when(someUUID).returns(Future(Some(someNote)))

@@ -2,14 +2,13 @@ package app.module
 
 import app.config.ConfigurationLoader
 import app.config.datastore.CassandraDBProperty
-import com.datastax.driver.core.{ Cluster, Session }
-import com.google.common.util.concurrent.ListenableFuture
+import com.datastax.driver.core.{Cluster, Session}
 
 object CassandraClientFactory
   extends CassandraDBProperty
-  with ConfigurationLoader {
+    with ConfigurationLoader {
 
-  def session: ListenableFuture[Session] = cluster.connectAsync(dbProperties.noteKeyspace)
+  def session: Session = cluster.connect(dbProperties.noteKeyspace)
 
   private def cluster = Cluster.builder()
     .addContactPoint(dbProperties.url)

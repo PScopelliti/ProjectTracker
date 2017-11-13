@@ -10,7 +10,7 @@ import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{Endpoint, _}
+import io.finch.{ Endpoint, _ }
 
 trait NoteApi {
 
@@ -29,26 +29,25 @@ trait NoteApi {
       log.info("Calling getNoteById endpoint... ")
       noteServiceRepository.getNote(uuid).map {
         case Some(x) => Ok(x)
-        case None => NotFound(notFoundError(s"No note for ID $uuid"))
+        case None    => NotFound(notFoundError(s"No note for ID $uuid"))
       }
     }
 
     def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
-      (noteGen: UUID => Note) => {
+      (noteGen: UUID => Note) =>
         log.info("Calling createNote endpoint... ")
         val note: Note = noteGen(noteUUID.getUUID)
         noteServiceRepository.setNote(note.id, note).map(Created)
-      }
     }
 
+    // TODO Add PUT method
     def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note => Note]) {
-      (id: UUID, pt: Note => Note) => {
+      (id: UUID, pt: Note => Note) =>
         log.info("Calling patchNote endpoint... ")
         noteServiceRepository.getNote(id).flatMap {
           case Some(x) => noteServiceRepository.updateNote(id, pt(x))
-          case None => Future.exception(new RuntimeException)
+          case None    => Future.exception(new RuntimeException)
         }.map(Ok)
-      }
     }
 
     def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
@@ -67,7 +66,6 @@ trait NoteApi {
 
     def getAllNotes: Endpoint[List[Note]] = get(basePath) {
       log.info("Calling getAllNote endpoint")
-
 
       val r: Future[Output[List[Note]]] = noteServiceRepository.getAllNote().map(Ok)
       r
