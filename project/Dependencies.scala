@@ -11,9 +11,8 @@ object Dependencies {
   lazy val logbackVersion = "1.2.3"
   lazy val scalatestVersion = "3.0.4"
   lazy val scalaMockVersion = "3.6.0"
-  lazy val cassandraVersion = "3.11.1"
-  lazy val cassandraDriver = "3.3.0"
   lazy val cassandraUnitVersion = "3.3.0.2"
+  lazy val phantomVersion = "2.15.5"
 
   val noteServiceDependencies = Seq(
 
@@ -32,7 +31,8 @@ object Dependencies {
 
     "com.typesafe" % "config" % typesafeConfigVersion,
 
-    "com.datastax.cassandra" % "cassandra-driver-core" % "3.3.0",
+    "com.outworkers"  %% "phantom-dsl" % phantomVersion,
+    "com.outworkers"   %% "phantom-finagle" % phantomVersion,
 
     "org.cassandraunit" % "cassandra-unit" % cassandraUnitVersion % "test",
     "org.scalamock" %% "scalamock-scalatest-support" % scalaMockVersion % "test",
@@ -52,10 +52,6 @@ object Dependencies {
 
     "com.twitter" %% "twitter-server" % twitterServerVersion,
     "com.twitter" %% "finagle-stats" % finagleVersion,
-
-    //Cassandra DB
-    "org.apache.cassandra" % "cassandra-all" % cassandraVersion,
-    "com.datastax.cassandra" % "cassandra-driver-core" % cassandraDriver,
 
     "org.slf4j" % "slf4j-simple" % slf4jVersion,
 

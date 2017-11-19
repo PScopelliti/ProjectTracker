@@ -12,8 +12,4 @@ CREATE TABLE notespace.note (
 );
 CREATE INDEX note_by_user ON notespace.note (userid);
 
-
-INSERT INTO notespace.note (noteid, created, content, userid) VALUES (uuid(), toTimestamp(now()), 'some content 1', b709a8b4-68a1-46e7-90b8-a5c8da9316b6);
-INSERT INTO notespace.note (noteid, created, content, userid) VALUES (uuid(), toTimestamp(now()), 'some content 2', b709a8b4-68a1-46e7-90b8-a5c8da9316b6);
-INSERT INTO notespace.note (noteid, created, content, userid) VALUES (uuid(), toTimestamp(now()), 'some content 3', b709a8b4-68a1-46e7-90b8-a5c8da9316b6);
-INSERT INTO notespace.note (noteid, created, content, userid) VALUES (uuid(), toTimestamp(now()), 'some content 4', b709a8b4-68a1-46e7-90b8-a5c8da9316b6);
+COPY note(noteid, created, content, userid) FROM 'data.csv';

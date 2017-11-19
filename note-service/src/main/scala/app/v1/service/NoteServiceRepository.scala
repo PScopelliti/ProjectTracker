@@ -7,13 +7,5 @@ import com.twitter.util.Future
 
 trait NoteServiceRepository {
 
-  def getNote(uuid: UUID): Future[Option[Note]]
-
-  def setNote(uuid: UUID, note: Note): Future[Note]
-
-  def deleteNote(uuid: UUID): Future[Boolean]
-
-  def updateNote(uuid: UUID, note: Note): Future[Note]
-
-  def getAllNote(): Future[List[Note]]
+  def findById(uuid: UUID): Future[Option[Note]]
 }
