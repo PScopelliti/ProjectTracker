@@ -14,6 +14,7 @@ object Dependencies {
   lazy val cassandraVersion = "3.11.1"
   lazy val cassandraDriver = "3.3.0"
   lazy val cassandraUnitVersion = "3.3.0.2"
+  lazy val phantomVersion = "2.15.5"
 
   val noteServiceDependencies = Seq(
 
@@ -32,7 +33,8 @@ object Dependencies {
 
     "com.typesafe" % "config" % typesafeConfigVersion,
 
-    "com.datastax.cassandra" % "cassandra-driver-core" % "3.3.0",
+    "com.outworkers" %% "phantom-dsl" % phantomVersion,
+    "com.outworkers" %% "phantom-finagle" % phantomVersion,
 
     "org.cassandraunit" % "cassandra-unit" % cassandraUnitVersion % "test",
     "org.scalamock" %% "scalamock-scalatest-support" % scalaMockVersion % "test",
