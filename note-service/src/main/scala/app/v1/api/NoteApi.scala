@@ -4,22 +4,24 @@ import java.util.UUID
 
 import app.filter.Errors.notFoundError
 import app.v1.model.Note
-import app.v1.service.{NoteService, UUIDService}
+import app.v1.service.NoteService
 import com.twitter.logging.Logger
+import com.twitter.util.{Await, Future}
+import io.circe.generic.auto._
+import io.finch.circe._
 import io.finch.{Endpoint, _}
 
 trait NoteApi {
 
-  self: UUIDService with NoteService =>
+  self: NoteService =>
 
+  val noteApi: DefaultNoteApi = new DefaultNoteApi
   private val basePath = "api" :: "v1" :: "notes"
   private val log = Logger.get(getClass)
 
-  val noteApi: DefaultNoteApi = new DefaultNoteApi
-
   class DefaultNoteApi {
 
-    def endpoints = (getNoteById)
+    def endpoints = (getNoteById :+: createNote)
 
     def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
@@ -29,14 +31,15 @@ trait NoteApi {
       }
     }
 
-    //    def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
-    //      (noteGen: UUID => Note) => {
-    //        log.info("Calling createNote endpoint... ")
-    //        val note: Note = noteGen(noteUUID.getUUID)
-    //        noteServiceRepository.setNote(note.id, note).map(Created)
-    //      }
-    //    }
-    //
+    import Note.decodeInstant
+    import Note.encodeInstant
+
+    def createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) { note: Note =>
+      log.info("Calling createNote endpoint... ")
+
+      store(note).flatMap( rs => Future(note)).map(Created)
+    }
+
     //    def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note => Note]) {
     //      (id: UUID, pt: Note => Note) => {
     //        log.info("Calling patchNote endpoint... ")

@@ -3,12 +3,11 @@
 CREATE KEYSPACE test_gs with replication = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
 
 
-create table test_gs.note(
+create table notespace.notes(
     noteid      uuid,
     userid      uuid,
     content     text,
-    created     timestamp,
-    PRIMARY KEY (noteid, created));
+    PRIMARY KEY (noteid));
 
 
 

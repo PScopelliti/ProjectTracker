@@ -7,7 +7,7 @@ import app.module.ServerModule
 import app.v1.Api
 import app.v1.api.NoteApi
 import app.v1.handler.ErrorHandler
-import app.v1.service.{NoteService, UUIDRandom}
+import app.v1.service.NoteService
 import com.twitter.server._
 
 object Main
@@ -18,7 +18,6 @@ object Main
     with Api
     with NoteApi
     with NoteService
-    with UUIDRandom
     with AdminHttpServer
     with Admin
     with CassandraDatabaseProvider
