@@ -7,7 +7,7 @@ import app.module.ServerModule
 import app.v1.Api
 import app.v1.api.NoteApi
 import app.v1.handler.ErrorHandler
-import app.v1.service.NoteService
+import app.v1.service.{NoteService, UUIDRandom}
 import com.twitter.server._
 
 object Main
@@ -17,6 +17,7 @@ object Main
     with ConfigurationLoader
     with Api
     with NoteApi
+    with UUIDRandom
     with NoteService
     with AdminHttpServer
     with Admin

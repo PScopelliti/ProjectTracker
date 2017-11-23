@@ -4,16 +4,16 @@ import java.util.UUID
 
 import app.filter.Errors.notFoundError
 import app.v1.model.Note
-import app.v1.service.NoteService
+import app.v1.service.{NoteService, UUIDService}
 import com.twitter.logging.Logger
-import com.twitter.util.{Await, Future}
+import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
 import io.finch.{Endpoint, _}
 
 trait NoteApi {
 
-  self: NoteService =>
+  self: NoteService with UUIDService =>
 
   val noteApi: DefaultNoteApi = new DefaultNoteApi
   private val basePath = "api" :: "v1" :: "notes"
@@ -31,13 +31,11 @@ trait NoteApi {
       }
     }
 
-    import Note.decodeInstant
-    import Note.encodeInstant
-
+    import Note._
     def createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) { note: Note =>
       log.info("Calling createNote endpoint... ")
 
-      store(note).flatMap( rs => Future(note)).map(Created)
+      store(noteUUID.getUUID, note).flatMap(rs => Future(note)).map(Created)
     }
 
     //    def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note => Note]) {

@@ -13,18 +13,18 @@ abstract class Notes extends Table[Notes, Note] with RootConnector {
 
   object content extends StringColumn
 
-  object date extends DateTimeColumn
+  object created extends DateTimeColumn
 
   def findById(noteId: UUID): Future[Option[Note]] = {
     select.where(_.id eqs noteId).one()
   }
 
-  def store(note: Note): Future[ResultSet] = {
+  def store(noteId: UUID, note: Note): Future[ResultSet] = {
     insert
-      .value(_.id, note.id)
+      .value(_.id, noteId)
       .value(_.userId, note.userid)
       .value(_.content, note.content)
-      .value(_.date,note.date)
+      .value(_.created, note.created)
       .future()
   }
 }

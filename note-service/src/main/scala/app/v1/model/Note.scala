@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 
 case class Note(id: UUID,
                 userid: UUID,
-                date: DateTime,
+                created: DateTime,
                 content: String)
 
 object Note {
