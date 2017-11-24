@@ -7,7 +7,6 @@ object Dependencies {
   lazy val circeVersion = "0.8.0"
   lazy val twitterServerVersion = "17.10.0"
   lazy val typesafeConfigVersion = "1.3.0"
-  lazy val slf4jVersion = "1.7.25"
   lazy val logbackVersion = "1.2.3"
   lazy val scalatestVersion = "3.0.4"
   lazy val scalaMockVersion = "3.6.0"
@@ -28,7 +27,7 @@ object Dependencies {
     "com.twitter" %% "twitter-server" % twitterServerVersion exclude("com.twitter", "libthrift"),
     "com.twitter" %% "finagle-stats" % finagleVersion,
 
-    "ch.qos.logback" % "logback-classic" % slf4jVersion,
+    "ch.qos.logback" % "logback-classic" % logbackVersion,
 
     "com.typesafe" % "config" % typesafeConfigVersion,
 
@@ -57,8 +56,6 @@ object Dependencies {
     //Cassandra DB
     "org.apache.cassandra" % "cassandra-all" % cassandraVersion,
     "com.datastax.cassandra" % "cassandra-driver-core" % cassandraDriver,
-
-    "org.slf4j" % "slf4j-simple" % slf4jVersion,
 
     "com.typesafe" % "config" % typesafeConfigVersion,
 
