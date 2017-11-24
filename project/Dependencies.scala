@@ -25,18 +25,17 @@ object Dependencies {
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
 
-    "com.twitter" %% "twitter-server" % twitterServerVersion,
+    "com.twitter" %% "twitter-server" % twitterServerVersion exclude("com.twitter", "libthrift"),
     "com.twitter" %% "finagle-stats" % finagleVersion,
-    "com.twitter" %% "finagle-redis" % finagleVersion,
 
-    "org.slf4j" % "slf4j-simple" % slf4jVersion,
+    "ch.qos.logback" % "logback-classic" % slf4jVersion,
 
     "com.typesafe" % "config" % typesafeConfigVersion,
 
     "com.outworkers" %% "phantom-dsl" % phantomVersion,
     "com.outworkers" %% "phantom-finagle" % phantomVersion,
 
-    "org.cassandraunit" % "cassandra-unit" % cassandraUnitVersion % "test" exclude("org.slf4j", "slf4j-log4j12"),
+    "org.cassandraunit" % "cassandra-unit" % cassandraUnitVersion % "test",
     "org.scalamock" %% "scalamock-scalatest-support" % scalaMockVersion % "test",
     "org.scalatest" %% "scalatest" % scalatestVersion % "test"
 
