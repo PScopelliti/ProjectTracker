@@ -44,7 +44,7 @@ object Dependencies {
 
     "com.github.finagle" %% "finch-core" % finchVersion,
     "com.github.finagle" %% "finch-circe" % finchVersion,
-    "com.github.finagle" % "finch-oauth2_2.11" % finchVersion,
+    "com.github.finagle" %% "finch-oauth2" % finchVersion,
 
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
