@@ -4,12 +4,12 @@ import java.util.UUID
 
 import app.filter.Errors.notFoundError
 import app.v1.model.Note
-import app.v1.service.{NoteService, UUIDService}
+import app.v1.service.{ NoteService, UUIDService }
 import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{Endpoint, _}
+import io.finch.{ Endpoint, _ }
 
 trait NoteApi {
 
@@ -27,11 +27,12 @@ trait NoteApi {
       log.info("Calling getNoteById endpoint... ")
       findById(uuid).map {
         case Some(x) => Ok(x)
-        case None => NotFound(notFoundError(s"No note for ID $uuid"))
+        case None    => NotFound(notFoundError(s"No note for ID $uuid"))
       }
     }
 
     import Note._
+
     def createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) { note: Note =>
       log.info("Calling createNote endpoint... ")
 

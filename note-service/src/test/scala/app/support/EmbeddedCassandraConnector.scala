@@ -2,11 +2,11 @@ package app.support
 
 import app.config.ConfigurationLoader
 import app.config.datastore.CassandraDBProperty
-import com.outworkers.phantom.connectors.{CassandraConnection, ContactPoint}
+import com.outworkers.phantom.connectors.{ CassandraConnection, ContactPoint }
 
 trait EmbeddedCassandraConnector
   extends CassandraDBProperty
-    with ConfigurationLoader {
+  with ConfigurationLoader {
 
   val connector: CassandraConnection =
     ContactPoint(9142)

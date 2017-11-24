@@ -1,12 +1,11 @@
 package app.v1.api
 
-import com.datastax.driver.core.{Cluster, Session}
+import com.datastax.driver.core.{ Cluster, Session }
 import org.cassandraunit.CQLDataLoader
 import org.cassandraunit.dataset.CQLDataSet
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FlatSpec, Matchers}
-
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach, FlatSpec, Matchers }
 
 trait EmbeddedCassandra extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterEach with Matchers {
 
@@ -21,7 +20,7 @@ trait EmbeddedCassandra extends FlatSpec with BeforeAndAfterAll with BeforeAndAf
     session = cluster.connect()
   }
 
-  override def beforeEach(): Unit ={
+  override def beforeEach(): Unit = {
     EmbeddedCassandraServerHelper.cleanEmbeddedCassandra()
     loadData(schema)
   }

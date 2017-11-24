@@ -1,13 +1,12 @@
 package app.v1
 
-import app.filter.{RequestLoggingFilter, RoutingMetricsFilter}
+import app.filter.{ RequestLoggingFilter, RoutingMetricsFilter }
 import app.metrics.Metrics.serverMetrics
 import app.v1.api.NoteApi
 import app.v1.handler.ErrorHandler
-import app.v1.model.Note
 import com.twitter.finagle.Service
 import com.twitter.finagle.http.filter.ExceptionFilter
-import com.twitter.finagle.http.{Request, Response}
+import com.twitter.finagle.http.{ Request, Response }
 import io.circe.generic.auto._
 import io.finch.circe._
 
@@ -21,9 +20,7 @@ trait Api {
 
   private val baseFilter = RequestLoggingFilter andThen ExceptionFilter andThen RouteMetricsFilter
 
-  import Note.decodeInstant
-  import Note.encodeInstant
-
+  import app.v1.model.Note._
   def apiService: Service[Request, Response] = baseFilter andThen api.handle(apiErrorHandler).toService
 
 }

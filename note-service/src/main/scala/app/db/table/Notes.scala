@@ -2,7 +2,7 @@ package app.db.table
 
 import app.db.RootConnector
 import app.v1.model.Note
-import com.outworkers.phantom.finagle.{UUID, _}
+import com.outworkers.phantom.finagle.{ UUID, _ }
 import com.twitter.util.Future
 
 abstract class Notes extends Table[Notes, Note] with RootConnector {

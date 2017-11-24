@@ -7,7 +7,7 @@ import com.outworkers.phantom.finagle.ContactPoint
 
 trait CassandraConnector
   extends CassandraDBProperty
-    with ConfigurationLoader {
+  with ConfigurationLoader {
 
   val connector: CassandraConnection =
     ContactPoint(dbProperties.port)

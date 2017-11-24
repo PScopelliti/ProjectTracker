@@ -36,7 +36,7 @@ object Dependencies {
     "com.outworkers" %% "phantom-dsl" % phantomVersion,
     "com.outworkers" %% "phantom-finagle" % phantomVersion,
 
-    "org.cassandraunit" % "cassandra-unit" % cassandraUnitVersion % "test",
+    "org.cassandraunit" % "cassandra-unit" % cassandraUnitVersion % "test" exclude("org.slf4j", "slf4j-log4j12"),
     "org.scalamock" %% "scalamock-scalatest-support" % scalaMockVersion % "test",
     "org.scalatest" %% "scalatest" % scalatestVersion % "test"
 
