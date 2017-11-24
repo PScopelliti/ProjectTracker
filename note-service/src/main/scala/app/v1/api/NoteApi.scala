@@ -21,7 +21,7 @@ trait NoteApi {
 
   class DefaultNoteApi {
 
-    def endpoints = (getNoteById :+: createNote)
+    def endpoints = (getNoteById :+: createNote :+: patchNote)
 
     def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
@@ -33,22 +33,22 @@ trait NoteApi {
 
     import Note._
 
-    def createNote: Endpoint[Note] = post(basePath :: jsonBody[Note]) { note: Note =>
-      log.info("Calling createNote endpoint... ")
-
-      store(noteUUID.getUUID, note).flatMap(rs => Future(note)).map(Created)
+    def createNote: Endpoint[Note] = post(basePath :: jsonBody[UUID => Note]) {
+      (noteGen: UUID => Note) =>
+        log.info("Calling createNote endpoint... ")
+        val note: Note = noteGen(noteUUID.getUUID)
+        store(note.id, note).flatMap(_ => Future(note)).map(Created)
     }
 
-    //    def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note => Note]) {
-    //      (id: UUID, pt: Note => Note) => {
-    //        log.info("Calling patchNote endpoint... ")
-    //        noteServiceRepository.getNote(id).flatMap {
-    //          case Some(x) => noteServiceRepository.updateNote(id, pt(x))
-    //          case None => Future.exception(new RuntimeException)
-    //        }.map(Ok)
-    //      }
-    //    }
-    //
+    def patchNote: Endpoint[Note] = patch(basePath :: uuid :: jsonBody[Note]) {
+      (uuid: UUID, note: Note) =>
+        log.info("Calling patchNote endpoint... ")
+        findById(uuid).flatMap {
+          case Some(_) => updateItem(uuid, note)
+          case None    => Future.exception(new RuntimeException)
+        }.flatMap(_ => Future(note)).map(Ok)
+    }
+
     //    def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
     //      log.info("Calling deleteNote endpoint... ")
     //      noteServiceRepository.deleteNote(uuid).map {

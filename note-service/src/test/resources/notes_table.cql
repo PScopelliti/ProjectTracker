@@ -6,5 +6,5 @@ id uuid,
 userid uuid,
 created timestamp,
 content text,
-PRIMARY KEY (id, created)
+PRIMARY KEY (id)
 );

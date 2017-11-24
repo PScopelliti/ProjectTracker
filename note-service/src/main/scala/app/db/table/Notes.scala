@@ -19,6 +19,13 @@ abstract class Notes extends Table[Notes, Note] with RootConnector {
     select.where(_.id eqs noteId).one()
   }
 
+  def updateItem(noteId: UUID, content: String): Future[ResultSet] = {
+    update
+      .where(_.id eqs noteId)
+      .modify(_.content setTo content)
+      .future()
+  }
+
   def store(noteId: UUID, note: Note): Future[ResultSet] = {
     insert
       .value(_.id, noteId)

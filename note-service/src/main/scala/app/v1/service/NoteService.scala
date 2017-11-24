@@ -10,4 +10,6 @@ trait NoteService extends DatabaseProvider[NoteDatabase] {
   def findById(id: UUID): Future[Option[Note]] = db.notes.findById(id)
 
   def store(id: UUID, note: Note): Future[ResultSet] = db.notes.store(id, note)
+
+  def updateItem(id: UUID, note: Note): Future[ResultSet] = db.notes.updateItem(id, note.content)
 }
