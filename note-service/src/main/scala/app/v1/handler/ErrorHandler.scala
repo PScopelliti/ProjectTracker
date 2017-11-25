@@ -1,35 +1,42 @@
 package app.v1.handler
 
-import com.twitter.finagle.http.{ Request, Response, Status, Version }
+import app.filter.AuthenticationFailedError
+import com.twitter.finagle.CancelledRequestException
+import com.twitter.finagle.http.{Request, Response, Status}
 import com.twitter.logging.Logger
 import com.twitter.util.Future
-import io.finch.Error.{ NotParsed, NotPresent, NotValid }
 import io.finch._
 
-trait ErrorHandler {
+abstract class ErrorHandler extends ResponseOps {
 
-  private val log = Logger.get(getClass)
+  private val logger = Logger.get(getClass)
 
-  def apiErrorHandler: PartialFunction[Throwable, Output[Nothing]] = {
-    case e: NotPresent => BadRequest(e)
-    case e: NotParsed  => BadRequest(e)
-    case e: NotValid   => BadRequest(e)
-    case e: Exception  => InternalServerError(e)
+  def apiErrorHandler: PartialFunction[Throwable, Output[Nothing]]
+
+  final def topLevelErrorHandler(request: Request, encoder: Encode.Json[Throwable]): PartialFunction[Throwable, Future[Response]] = {
+    case e: AuthenticationFailedError => respond(Status.Unauthorized, e, encoder)
+    case e: CancelledRequestException => respond(Status.ClientClosedRequest, e, encoder)
+    case t: Throwable => unhandledException(request.uri, t, encoder)
   }
 
-  def topLevelErrorHandler[REQUEST <: Request](request: REQUEST, encoder: Encode[Throwable]): PartialFunction[Throwable, Future[Response]] = {
-    case t: Throwable => unhandledException(request, t, encoder)
+  private def unhandledException(requestUri: String, t: Throwable, encoder: Encode.Json[Throwable]): Future[Response] = {
+    logUnhandledError(requestUri, t)
+    respond(Status.InternalServerError, t, encoder)
   }
 
-  private def unhandledException[REQUEST <: Request](request: REQUEST, t: Throwable, encoder: Encode[Throwable]): Future[Response] = {
+  //noinspection ScalaStyle
+  private def logUnhandledError(requestUri: String, t: Throwable): Unit =
     try {
-      log.info(s"Unhandled exception on URI ${request.uri} with message $t")
-      Future.value(Response(Version.Http11, Status.InternalServerError))
+      logger.info(s"Unhandled exception on URI $requestUri with message $t")
     } catch {
-      case e: Throwable => {
-        log.error(s"Unable to log unhandled exception: $e")
+      case e: Throwable =>
+        Console.err.println(s"Unable to log unhandled exception: $e")
         throw e
-      }
     }
+
+  private def respond(status: Status, t: Throwable, encoder: Encode.Json[Throwable]): Future[Response] = {
+    val response = jsonResponse(status, t)(encoder)
+    response.cacheControl = "no-cache"
+    Future.value(response)
   }
 }

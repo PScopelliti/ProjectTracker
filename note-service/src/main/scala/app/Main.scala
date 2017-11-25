@@ -6,7 +6,6 @@ import app.db.CassandraDatabaseProvider
 import app.module.ServerModule
 import app.v1.Api
 import app.v1.api.NoteApi
-import app.v1.handler.ErrorHandler
 import app.v1.service.{ NoteService, UUIDRandom }
 import com.twitter.server._
 
@@ -22,7 +21,6 @@ object Main
   with AdminHttpServer
   with Admin
   with CassandraDatabaseProvider
-  with Lifecycle
-  with ErrorHandler {
+  with Lifecycle {
 
 }
