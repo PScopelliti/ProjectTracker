@@ -1,12 +1,12 @@
 package app.v1
 
-import app.filter.{RequestLoggingFilter, RoutingMetricsFilter}
+import app.filter.{ RequestLoggingFilter, RoutingMetricsFilter }
 import app.metrics.Metrics.serverMetrics
 import app.v1.api.NoteApi
 import app.v1.handler.FinchTemplateErrorHandler.apiErrorHandler
-import app.v1.handler.{ExceptionFilter, FinchTemplateErrorHandler, ResponseEncoders}
+import app.v1.handler.{ ExceptionFilter, FinchTemplateErrorHandler, ResponseEncoders }
 import com.twitter.finagle.Service
-import com.twitter.finagle.http.{Request, Response}
+import com.twitter.finagle.http.{ Request, Response }
 import io.circe.generic.auto._
 import io.finch.circe._
 
@@ -16,7 +16,7 @@ object RouteMetricsFilter extends RoutingMetricsFilter(serverMetrics)
 
 trait Api {
 
-  self:  NoteApi =>
+  self: NoteApi =>
 
   private def api = noteApi.endpoints
 

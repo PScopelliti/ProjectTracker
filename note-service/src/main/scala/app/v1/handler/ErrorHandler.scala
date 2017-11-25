@@ -2,7 +2,7 @@ package app.v1.handler
 
 import app.filter.AuthenticationFailedError
 import com.twitter.finagle.CancelledRequestException
-import com.twitter.finagle.http.{Request, Response, Status}
+import com.twitter.finagle.http.{ Request, Response, Status }
 import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.finch._
@@ -16,7 +16,7 @@ abstract class ErrorHandler extends ResponseOps {
   final def topLevelErrorHandler(request: Request, encoder: Encode.Json[Throwable]): PartialFunction[Throwable, Future[Response]] = {
     case e: AuthenticationFailedError => respond(Status.Unauthorized, e, encoder)
     case e: CancelledRequestException => respond(Status.ClientClosedRequest, e, encoder)
-    case t: Throwable => unhandledException(request.uri, t, encoder)
+    case t: Throwable                 => unhandledException(request.uri, t, encoder)
   }
 
   private def unhandledException(requestUri: String, t: Throwable, encoder: Encode.Json[Throwable]): Future[Response] = {

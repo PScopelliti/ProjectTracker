@@ -3,14 +3,14 @@ package app.v1.handler
 import java.nio.ByteBuffer
 
 import com.twitter.io.Buf
-import io.circe.{Json, Printer}
+import io.circe.{ Json, Printer }
 
 trait JsonPrinter {
   private val printer = Printer.noSpaces.copy(dropNullKeys = true)
 
   /**
-    * @note Use sparingly, prefer `jsonToByteBuffer` or `jsonToBuff` if printing to a response (as it's faster).
-    */
+   * @note Use sparingly, prefer `jsonToByteBuffer` or `jsonToBuff` if printing to a response (as it's faster).
+   */
   final def jsonToString(json: Json): String = printer.pretty(json)
 
   final def jsonToByteBuffer(json: Json): ByteBuffer = printer.prettyByteBuffer(json)

@@ -1,7 +1,7 @@
 package app.v1.handler
 
 import io.circe.syntax._
-import io.circe.{Encoder, Json}
+import io.circe.{ Encoder, Json }
 
 trait ExceptionEncoder {
   val exceptionEncoder: Encoder[Exception] = Encoder.instance[Exception](t => exceptionJson(t))

@@ -1,8 +1,8 @@
 package app.v1.handler
 
 import java.nio.charset.StandardCharsets.UTF_8
-import java.nio.charset.{Charset => NioCharset}
-import java.nio.{ByteBuffer, CharBuffer}
+import java.nio.charset.{ Charset => NioCharset }
+import java.nio.{ ByteBuffer, CharBuffer }
 
 import com.twitter.finagle.netty3.ChannelBufferBuf.Owned
 import com.twitter.io.Buf

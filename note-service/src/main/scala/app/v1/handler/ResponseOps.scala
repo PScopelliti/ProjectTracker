@@ -6,11 +6,11 @@ import app.v1.handler.BufOps._
 import cats.Show
 import com.twitter.concurrent.AsyncStream
 import com.twitter.finagle.http.Version.Http11
-import com.twitter.finagle.http.{Fields, Response, Status, Version}
+import com.twitter.finagle.http.{ Fields, Response, Status, Version }
 import com.twitter.io.Buf
 import com.twitter.util.Future
-import io.circe.{Encoder, Json}
-import io.finch.{Encode, Text}
+import io.circe.{ Encoder, Json }
+import io.finch.{ Encode, Text }
 
 trait ResponseOps extends JsonPrinter {
   implicit val bufShow: Show[Buf] = ShowOps.showBuf
@@ -21,18 +21,18 @@ trait ResponseOps extends JsonPrinter {
     Encode.instance[A, Text.Html]((a, charset) => stringToBuf(s.show(a), charset))
 
   /**
-    * Encode a response, where the payload is placed as the root node in the returned JSON, so without an enclosing
-    * `data` field. Use this function sparingly, only for `Json` that already includes the field. In general, we always
-    * want to return a top-level data element.
-    */
+   * Encode a response, where the payload is placed as the root node in the returned JSON, so without an enclosing
+   * `data` field. Use this function sparingly, only for `Json` that already includes the field. In general, we always
+   * want to return a top-level data element.
+   */
   final def rootJsonEncode[A](implicit encoder: Encoder[A]): Encode.Json[A] =
     Encode.json { (a, _) =>
       byteBufferToBuf(jsonToByteBuffer(encoder.apply(a)))
     }
 
   /**
-    * Encode a response, with an enclosing `data` field at the root of the returned JSON.
-    */
+   * Encode a response, with an enclosing `data` field at the root of the returned JSON.
+   */
   final def dataJsonEncode[A](implicit encoder: Encoder[A]): Encode.Json[A] =
     Encode.json { (a, _) =>
       byteBufferToBuf(jsonToByteBuffer(Json.obj("data" -> encoder.apply(a))))
