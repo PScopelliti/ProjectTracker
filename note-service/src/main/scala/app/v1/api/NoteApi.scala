@@ -3,13 +3,15 @@ package app.v1.api
 import java.util.UUID
 
 import app.filter.Errors.notFoundError
+import app.filter.NotFoundError
 import app.v1.model.Note
-import app.v1.service.{ NoteService, UUIDService }
+import app.v1.service.{NoteService, UUIDService}
+import com.twitter.finagle.http.Status
 import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{ Endpoint, _ }
+import io.finch.{Endpoint, _}
 
 trait NoteApi {
 
@@ -27,7 +29,7 @@ trait NoteApi {
       log.info("Calling getNoteById endpoint... ")
       findById(uuid).map {
         case Some(x) => Ok(x)
-        case None    => NotFound(notFoundError(s"No note for ID $uuid"))
+        case None => NotFound(notFoundError(s"No note for ID $uuid"))
       }
     }
 
@@ -44,9 +46,9 @@ trait NoteApi {
       (uuid: UUID, note: Note) =>
         log.info("Calling patchNote endpoint... ")
         findById(uuid).flatMap {
-          case Some(_) => updateItem(uuid, note)
-          case None    => Future.exception(new RuntimeException)
-        }.flatMap(_ => Future(note)).map(Ok)
+          case Some(_) => updateItem(uuid, note).flatMap(_ => Future(note)).map(Ok)
+          case None => Future(NotFoundError(s"Not found note with id $uuid")).map(NotFound)
+        }
     }
 
     //    def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>

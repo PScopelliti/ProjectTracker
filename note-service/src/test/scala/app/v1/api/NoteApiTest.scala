@@ -107,7 +107,6 @@ class NoteApiTest extends EmbeddedCassandra {
 
     // Verify result
     result.awaitOutputUnsafe().map(_.status).get should be(Status.NotFound)
-
   }
 
 }
