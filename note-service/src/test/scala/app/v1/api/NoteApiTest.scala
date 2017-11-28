@@ -16,9 +16,9 @@ import org.scalamock.scalatest.MockFactory
 
 trait CassandraMock
   extends NoteApi
-  with NoteService
-  with UUIDService
-  with MockFactory {
+    with NoteService
+    with UUIDService
+    with MockFactory {
 
   override def database: NoteDatabase = new NoteDatabase(EmbeddedCassandraConnector.connector)
 
@@ -109,4 +109,29 @@ class NoteApiTest extends EmbeddedCassandra {
     result.awaitOutputUnsafe().map(_.status).get should be(Status.NotFound)
   }
 
+  behavior of "deleteNote endpoint"
+
+  it should " return 200 if a note has been deleted successfully " in new CassandraMock {
+
+    loadData(new ClassPathCQLDataSet("insert_notes.cql"))
+
+    val input = Input.delete(basePath + "/" + someNoteUUID)
+
+    // sut
+    val result = noteApi.deleteNote(input)
+
+    // Verify result
+    result.awaitOutputUnsafe().map(_.status).get should be(Status.Ok)
+  }
+
+  it should " return 404 if a note doesn't exist " in new CassandraMock {
+
+    val input = Input.delete(basePath + "/" + someNoteUUID)
+
+    // sut
+    val result = noteApi.deleteNote(input)
+
+    // Verify result
+    result.awaitOutputUnsafe().map(_.status).get should be(Status.NotFound)
+  }
 }

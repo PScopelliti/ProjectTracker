@@ -2,7 +2,7 @@ package app.db.table
 
 import app.db.RootConnector
 import app.v1.model.Note
-import com.outworkers.phantom.finagle.{ UUID, _ }
+import com.outworkers.phantom.finagle.{UUID, _}
 import com.twitter.util.Future
 
 abstract class Notes extends Table[Notes, Note] with RootConnector {
@@ -32,6 +32,12 @@ abstract class Notes extends Table[Notes, Note] with RootConnector {
       .value(_.userId, note.userid)
       .value(_.content, note.content)
       .value(_.created, note.created)
+      .future()
+  }
+
+  def deleteItem(noteId: UUID): Future[ResultSet] = {
+    delete
+      .where(_.id eqs noteId)
       .future()
   }
 }

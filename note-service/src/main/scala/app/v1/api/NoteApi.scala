@@ -51,19 +51,15 @@ trait NoteApi {
         }
     }
 
-    //    def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) { uuid: UUID =>
-    //      log.info("Calling deleteNote endpoint... ")
-    //      noteServiceRepository.deleteNote(uuid).map {
-    //        case true => {
-    //          log.info(s"Deleted Note with $uuid successfully")
-    //          NoContent[Unit].withStatus(Status.Ok)
-    //        }
-    //        case false => {
-    //          log.error(s"Deleted note $uuid failed")
-    //          NoContent[Unit].withStatus(Status.NotFound)
-    //        }
-    //      }
-    //    }
+    def deleteNote: Endpoint[Unit] = delete(basePath :: uuid) {
+      uuid: UUID =>
+        log.info("Calling deleteNote endpoint... ")
+        findById(uuid).flatMap {
+          case Some(_) => deleteItem(uuid).flatMap(_ => Future.Unit).map(Ok)
+          case None => Future(NotFoundError(s"Not found note with id $uuid")).map(NotFound)
+        }
+    }
+
     //
     //    def getAllNotes: Endpoint[List[Note]] = get(basePath) {
     //      log.info("Calling getAllNote endpoint")
