@@ -1,17 +1,16 @@
 package app.v1.service
 
-import app.db.NoteDatabase
 import app.v1.model.Note
 import com.outworkers.phantom.finagle._
 import com.twitter.util.Future
 
-trait NoteService extends DatabaseProvider[NoteDatabase] {
+trait NoteService {
 
-  def findById(id: UUID): Future[Option[Note]] = db.notes.findById(id)
+  def findById(id: UUID): Future[Option[Note]]
 
-  def store(id: UUID, note: Note): Future[ResultSet] = db.notes.store(id, note)
+  def store(id: UUID, note: Note): Future[Note]
 
-  def updateItem(id: UUID, note: Note): Future[ResultSet] = db.notes.updateItem(id, note.content)
+  def updateItem(id: UUID, note: Note): Future[Note]
 
-  def deleteItem(id: UUID): Future[ResultSet] = db.notes.deleteItem(id)
+  def deleteItem(id: UUID): Future[Unit]
 }

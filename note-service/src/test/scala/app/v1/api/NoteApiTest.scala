@@ -5,7 +5,7 @@ import java.util.UUID.fromString
 import app.db.NoteDatabase
 import app.support.EmbeddedCassandraConnector
 import app.v1.model.Note
-import app.v1.service.{ NoteService, UUIDService }
+import app.v1.service.{CassandraNoteService, UUIDService}
 import com.twitter.finagle.http.Status
 import io.circe.generic.auto._
 import io.finch.Input
@@ -16,7 +16,7 @@ import org.scalamock.scalatest.MockFactory
 
 trait CassandraMock
   extends NoteApi
-    with NoteService
+    with CassandraNoteService
     with UUIDService
     with MockFactory {
 
