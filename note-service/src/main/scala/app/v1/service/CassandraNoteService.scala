@@ -2,7 +2,7 @@ package app.v1.service
 
 import app.db.NoteDatabase
 import app.v1.model.Note
-import com.outworkers.phantom.finagle.{DatabaseProvider, UUID}
+import com.outworkers.phantom.finagle.{ DatabaseProvider, UUID }
 import com.twitter.util.Future
 
 trait CassandraNoteService extends NoteService with DatabaseProvider[NoteDatabase] {
@@ -25,4 +25,10 @@ trait CassandraNoteService extends NoteService with DatabaseProvider[NoteDatabas
     db.notes.deleteItem(id)
       .flatMap(_ => Future.Done)
   }
+
+  def getItems(): Future[List[Note]] = {
+    db.notes.getItems
+      .flatMap(x => Future(x.records))
+  }
+
 }

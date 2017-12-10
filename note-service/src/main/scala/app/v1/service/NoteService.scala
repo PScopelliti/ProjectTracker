@@ -13,4 +13,6 @@ trait NoteService {
   def updateItem(id: UUID, note: Note): Future[Note]
 
   def deleteItem(id: UUID): Future[Unit]
+
+  def getItems(): Future[List[Note]]
 }

@@ -5,7 +5,7 @@ import java.util.UUID.fromString
 import app.db.NoteDatabase
 import app.support.EmbeddedCassandraConnector
 import app.v1.model.Note
-import app.v1.service.{CassandraNoteService, UUIDService}
+import app.v1.service.{ CassandraNoteService, UUIDService }
 import com.twitter.finagle.http.Status
 import io.circe.generic.auto._
 import io.finch.Input
@@ -16,9 +16,9 @@ import org.scalamock.scalatest.MockFactory
 
 trait CassandraMock
   extends NoteApi
-    with CassandraNoteService
-    with UUIDService
-    with MockFactory {
+  with CassandraNoteService
+  with UUIDService
+  with MockFactory {
 
   override def database: NoteDatabase = new NoteDatabase(EmbeddedCassandraConnector.connector)
 
@@ -133,5 +133,24 @@ class NoteApiTest extends EmbeddedCassandra {
 
     // Verify result
     result.awaitOutputUnsafe().map(_.status).get should be(Status.NotFound)
+  }
+
+  behavior of "getAllNotes endpoint"
+
+  it should " return a list of notes" in new CassandraMock {
+
+    loadData(new ClassPathCQLDataSet("insert_notes.cql"))
+
+    val input = Input.get(basePath)
+
+    // sut
+    val result = noteApi.getAllNotes(input)
+
+    // Verify result
+    result.awaitOutputUnsafe().map(_.status).get should be(Status.Ok)
+    result.awaitOutputUnsafe().map(_.value).get(0).id should be(fromString("3e6ea370-e09a-4c82-b413-f557f4baf3e3"))
+    result.awaitOutputUnsafe().map(_.value).get(1).id should be(fromString("4a5d0831-4630-4e82-b3bb-80fe8a7dc9bd"))
+    result.awaitOutputUnsafe().map(_.value).get(2).id should be(fromString("c8f727b3-f31d-41a3-9d25-e0d282dd82cd"))
+    result.awaitOutputUnsafe().map(_.value).get(3).id should be(fromString("05db40e8-0eb6-4166-9a97-aece071237fd"))
   }
 }

@@ -5,13 +5,12 @@ import java.util.UUID
 import app.filter.Errors.notFoundError
 import app.filter.NotFoundError
 import app.v1.model.Note
-import app.v1.service.{NoteService, UUIDService}
-import com.twitter.finagle.http.Status
+import app.v1.service.{ NoteService, UUIDService }
 import com.twitter.logging.Logger
 import com.twitter.util.Future
 import io.circe.generic.auto._
 import io.finch.circe._
-import io.finch.{Endpoint, _}
+import io.finch.{ Endpoint, _ }
 
 trait NoteApi {
 
@@ -23,13 +22,13 @@ trait NoteApi {
 
   class DefaultNoteApi {
 
-    def endpoints = (getNoteById :+: createNote :+: patchNote)
+    def endpoints = (getNoteById :+: createNote :+: patchNote :+: deleteNote :+: getAllNotes)
 
     def getNoteById: Endpoint[Note] = get(basePath :: uuid) { uuid: UUID =>
       log.info("Calling getNoteById endpoint... ")
       findById(uuid).map {
         case Some(x) => Ok(x)
-        case None => NotFound(notFoundError(s"No note for ID $uuid"))
+        case None    => NotFound(notFoundError(s"No note for ID $uuid"))
       }
     }
 
@@ -47,7 +46,7 @@ trait NoteApi {
         log.info("Calling patchNote endpoint... ")
         findById(uuid).flatMap {
           case Some(_) => updateItem(uuid, note).flatMap(_ => Future(note)).map(Ok)
-          case None => Future(NotFoundError(s"Not found note with id $uuid")).map(NotFound)
+          case None    => Future(NotFoundError(s"Not found note with id $uuid")).map(NotFound)
         }
     }
 
@@ -56,18 +55,14 @@ trait NoteApi {
         log.info("Calling deleteNote endpoint... ")
         findById(uuid).flatMap {
           case Some(_) => deleteItem(uuid).flatMap(_ => Future.Unit).map(Ok)
-          case None => Future(NotFoundError(s"Not found note with id $uuid")).map(NotFound)
+          case None    => Future(NotFoundError(s"Not found note with id $uuid")).map(NotFound)
         }
     }
 
-    //
-    //    def getAllNotes: Endpoint[List[Note]] = get(basePath) {
-    //      log.info("Calling getAllNote endpoint")
-    //
-    //
-    //      val r: Future[Output[List[Note]]] = noteServiceRepository.getAllNote().map(Ok)
-    //      r
-    //    }
+    def getAllNotes: Endpoint[List[Note]] = get(basePath) {
+      log.info("Calling getAllNote endpoint")
+      getItems().map(Ok)
+    }
 
   }
 

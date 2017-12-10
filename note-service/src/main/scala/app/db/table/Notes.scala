@@ -2,7 +2,7 @@ package app.db.table
 
 import app.db.RootConnector
 import app.v1.model.Note
-import com.outworkers.phantom.finagle.{UUID, _}
+import com.outworkers.phantom.finagle.{ UUID, _ }
 import com.twitter.util.Future
 
 abstract class Notes extends Table[Notes, Note] with RootConnector {
@@ -39,5 +39,9 @@ abstract class Notes extends Table[Notes, Note] with RootConnector {
     delete
       .where(_.id eqs noteId)
       .future()
+  }
+
+  def getItems(): Future[ListResult[Note]] = {
+    select.all().paginateRecord()
   }
 }
